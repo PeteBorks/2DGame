@@ -13,6 +13,10 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField, Range(0,10)]
     float speed = 1;
+    [SerializeField, Range(1, 3)]
+    float crouchModifier = 1.5f;
+    [SerializeField]
+    Animator animator;
     [SerializeField]
     LayerMask groundFilter;
     [SerializeField]
@@ -23,16 +27,19 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer sprite;
     [SerializeField, Range (0,1)]
     float jumpThreshold = 0.1f;
-    [SerializeField, Range(5, 10)]
+    [SerializeField, Range(5, 25)]
     float jumpForce = 5f;
 
     bool isFacingRight = true;
     bool isGrounded;
+    bool isCrouching = false;
     bool jump;
+    
     RaycastHit2D[] results = new RaycastHit2D[1];
     ContactFilter2D filter;
     Rigidbody2D rb2d;
-    Collider2D collider2d;
+    CapsuleCollider2D collider2d;
+    
     Vector2 movement;
 
 
@@ -46,24 +53,24 @@ public class PlayerController : MonoBehaviour
             minDepth = -1
         };
         rb2d = GetComponent<Rigidbody2D>();
-        collider2d = GetComponent<Collider2D>();
+        collider2d = GetComponent<CapsuleCollider2D>();
     }
 
     void Update()
     {
         isGrounded = collider2d.Raycast(Vector2.down, filter, results, collider2d.bounds.extents.y + jumpThreshold) == 1;
         movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2d.velocity.y);
-
         
+        animator.SetFloat("speed", Mathf.Abs(movement.x));
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
-            jump = true;
-    }
-
-    void OnRenderObject()
-    {
         if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
             SwitchDirection();
+
+        if (Input.GetButtonDown("Crouch") && isGrounded)
+            Crouch();
+
+        if (Input.GetButtonDown("Jump") && isGrounded && !isCrouching)
+            jump = true;
     }
 
     void FixedUpdate()
@@ -72,6 +79,7 @@ public class PlayerController : MonoBehaviour
         {
             movement.y = jumpForce;
             jump = false;
+            Debug.Log("Pulou");
         }
             
         rb2d.velocity = movement;
@@ -89,15 +97,32 @@ public class PlayerController : MonoBehaviour
         {
             leftCam.SetActive(true);
             rightCam.SetActive(false);
-            
+            sprite.flipX = true;
         }
         else
         {
             leftCam.SetActive(false);
             rightCam.SetActive(true);
+            sprite.flipX = false;
         }
-        sprite.transform.localScale = new Vector3(-sprite.transform.localScale.x, sprite.transform.localScale.y, sprite.transform.localScale.z);
-        sprite.flipX = !sprite.flipX;
+        
         isFacingRight = !isFacingRight;
+    }
+
+    void Crouch()
+    {
+        if(!isCrouching)
+        {
+            collider2d.size = new Vector2(1.3f,1.3f);
+            collider2d.offset = new Vector2(0.0f, 0.65f);
+            speed /= crouchModifier;
+        }
+        else
+        {
+            collider2d.size = new Vector2(1.5f, 2.0f);
+            collider2d.offset = new Vector2(0.0f, 1.0f);
+            speed *= crouchModifier;
+        }
+        isCrouching = !isCrouching;
     }
 }
