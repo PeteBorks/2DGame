@@ -11,6 +11,8 @@ public class MeepController : MonoBehaviour
     PlayerController pawnController;
     [SerializeField]
     float distanceThreshold = 2.0f;
+    [SerializeField]
+    SpriteRenderer sprite;
     public float moveSpeed = 9.0f;
     float crouchSpeed, normalSpeed;
 
@@ -23,7 +25,11 @@ public class MeepController : MonoBehaviour
 
     void Update()
     {
-    
+        if (!pawnController.isFacingRight)
+            sprite.flipX = true;
+        else
+            sprite.flipX = false;
+            
     }
 
     void FixedUpdate()

@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     float jumpForce = 5f;
     float crouchDetectPos = 2f;
 
-    bool isFacingRight = true;
+    public bool isFacingRight = true;
     bool isGrounded = true;
     bool isCrouching = false;
     bool crouchCheck = false;
