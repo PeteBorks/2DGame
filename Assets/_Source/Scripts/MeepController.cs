@@ -13,40 +13,58 @@ public class MeepController : MonoBehaviour
     float distanceThreshold = 2.0f;
     [SerializeField]
     SpriteRenderer sprite;
-    public float moveSpeed = 9.0f;
-    float crouchSpeed, normalSpeed;
-
+    public float speed = 9.0f;
+    float slideSpeed, normalSpeed;
+    float distance;
+    bool isFacingRight = true;
+    Vector2 movement;
+    Rigidbody2D rb2d;
     
     void Start()
     {
-        crouchSpeed = moveSpeed / pawnController.crouchModifier;
-        normalSpeed = moveSpeed;
+        
+        normalSpeed = speed;
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        if (!pawnController.isFacingRight)
-            sprite.flipX = true;
-        else
-            sprite.flipX = false;
-            
+        
+        if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
+            SwitchDirection();
+        distance = Vector3.Distance(transform.position, target.transform.position);
+        
+
     }
 
     void FixedUpdate()
     {
-        if(Vector2.Distance(transform.position, target.transform.position) > distanceThreshold)
-            transform.position = Vector2.MoveTowards(transform.position, target.transform.position, moveSpeed*Time.deltaTime);
+       // if (distance > distanceThreshold)
+        //    transform.position = Vector2.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
     }
 
-    public void OnMasterCrouch()
+    void SwitchDirection()
     {
-        if (moveSpeed == normalSpeed)
+        if (isFacingRight)
         {
-            moveSpeed = crouchSpeed;
+            sprite.flipX = true;
         }
         else
         {
-            moveSpeed = normalSpeed;
+            sprite.flipX = false;
+        }
+
+        isFacingRight = !isFacingRight;
+    }
+    public void OnMasterCrouch()
+    {
+        if (speed == normalSpeed)
+        {
+            speed = slideSpeed;
+        }
+        else
+        {
+            speed = normalSpeed;
         }
         
         

@@ -12,13 +12,29 @@ using UnityEngine.Events;
 [SelectionBase]
 public class PlayerController : MonoBehaviour
 {
-    
+    [Header("Movement")]
     [SerializeField, Range(0,10)]
     float speed = 1f;
     [SerializeField, Range(0,2)]
     float wallJumpDelay = 1f;
-    [Range(1, 3)]
-    public float crouchModifier = 1.5f;
+    [SerializeField, Range(0,30)]
+    float dashSpeed = 14;
+    [SerializeField, Range(0, 1)]
+    float dashDuration = 0.2f;
+    [SerializeField, Range(0, 4)]
+    float dashCooldown = 0.5f;
+    [SerializeField, Range(1,2)]
+    float slideSpeedModifier = 1.3f;
+    [SerializeField, Range(0,1)]
+    float slideDuration = 0.5f;
+    [SerializeField, Range(0,4)]
+    float slideCooldown = 1f;
+    [SerializeField, Range(0, 1)]
+    float jumpThreshold = 0.1f;
+    [SerializeField, Range(5, 25)]
+    float jumpForce = 5f;
+
+    [Header("References")]
     [SerializeField]
     Animator animator;
     [SerializeField]
@@ -33,18 +49,24 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer sprite;
     [SerializeField]
     GameObject followPivot;
-    [SerializeField, Range (0,1)]
-    float jumpThreshold = 0.1f;
-    [SerializeField, Range(5, 25)]
-    float jumpForce = 5f;
-    float crouchDetectPos = 2f;
 
-    public bool isFacingRight = true;
+    [Header("Events")]
+    [Space]
+    public UnityEvent SlideEvent;
+
+    float normalSpeed;
+    float gravityScale;
+    public bool inputEnabled = true;
+    bool canSlide = true;
+    bool canDash = true;
+    bool isFacingRight = true;
     bool isGrounded = true;
-    bool isCrouching = false;
-    bool crouchCheck = false;
+    bool isSliding = false;
+    bool isDashing = false;
+    bool ceilingCheck = false;
     bool rightSideCheck = false;
     bool leftSideCheck = false;
+    bool wantToStandUp = false;
     bool justJumpR = false;
     bool justJumpL = false;
     bool jump;
@@ -58,9 +80,7 @@ public class PlayerController : MonoBehaviour
 
     Vector2 movement;
 
-    [Header("Events")]
-    [Space]
-    public UnityEvent CrouchEvent;
+    
 
     void Start()
     {
@@ -81,50 +101,77 @@ public class PlayerController : MonoBehaviour
         };
         rb2d = GetComponent<Rigidbody2D>();
         collider2d = GetComponent<CapsuleCollider2D>();
+        normalSpeed = speed;
+        gravityScale = rb2d.gravityScale;
     }
 
     void Update()
     {
-        
+        bool wasGrounded = isGrounded;
 
-        movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2d.velocity.y);
+        isGrounded = collider2d.Raycast(Vector2.down, filter, results, collider2d.bounds.extents.y + jumpThreshold) == 1;
+        ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
+        rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
+        leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
+
+        if (inputEnabled)
+            movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2d.velocity.y);
         
         animator.SetFloat("speed", Mathf.Abs(movement.x));
 
         if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
             SwitchDirection();
 
-        if (Input.GetButtonDown("Crouch") && isGrounded && !crouchCheck)
-            Crouch();
+        if (inputEnabled && Input.GetButtonDown("Fire3") && !ceilingCheck)
+            if (animator.GetBool("isOnAir") && canDash)
+                StartCoroutine("Dash");
+            else if (isGrounded && canSlide)
+                StartCoroutine("Slide");
 
-        if (Input.GetButtonDown("Jump") && (isGrounded || animator.GetBool("isGrabbing")) && !isCrouching)
+        if ((inputEnabled || animator.GetBool("isSliding")) && Input.GetButtonDown("Jump") && (isGrounded || animator.GetBool("isGrabbing")) && !ceilingCheck)
         {
             jump = true;
             animator.SetBool("isOnAir", true);
+            if (isSliding)
+            {
+                StartCoroutine("StopSliding");
+            }
         }
 
-        
+        if (wasGrounded && !isGrounded)
+            animator.SetBool("isOnAir", true);
+        else if (isGrounded && !wasGrounded)
+            OnLanding();
+
+        if (!isGrounded && isSliding)
+        {
+            StartCoroutine("StopSliding");
+        }
+
+        if(isDashing && animator.GetBool("isGrabbing"))
+        {
+            StartCoroutine("StopDashing");
+        }
+       
     }
 
     void FixedUpdate()
     {
-        bool wasGrounded = isGrounded;
-        
         if (jump && animator.GetBool("isGrabbing"))
         {
             if (rightSideCheck)
             {
                 rb2d.simulated = true;
-                movement = new Vector2(-15, 14);
-                justJumpR = true;                //TODO delete justJUMP
+                movement = new Vector2(-15, jumpForce);
+                justJumpR = true;                
                 justJumpL = false;
                 StartCoroutine(JustJump(true));
             }
             if(leftSideCheck)
             {
                 rb2d.simulated = true;
-                movement = new Vector2(15, 14);
-                justJumpL = true;                //TODO delete justJUMP
+                movement = new Vector2(15, jumpForce);
+                justJumpL = true;               
                 justJumpR = false;
                 StartCoroutine(JustJump(false));
             }
@@ -137,17 +184,13 @@ public class PlayerController : MonoBehaviour
             jump = false;
         }
 
-        isGrounded = collider2d.Raycast(Vector2.down, filter, results, collider2d.bounds.extents.y + jumpThreshold) == 1;
-        crouchCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
-        rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.05f) == 1;
-        leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.05f) == 1;
-
-        if (wasGrounded && !isGrounded)
-            animator.SetBool("isOnAir", true);
-        else if (isGrounded && !wasGrounded)
-            OnLanding();
-
-        if (animator.GetBool("isOnAir") && !animator.GetBool("isGrabbing"))
+        if(wantToStandUp && !ceilingCheck)
+        {
+            StartCoroutine("StopSliding");
+            wantToStandUp = false;
+        }
+  
+        if ((animator.GetBool("isOnAir") || isDashing) && !animator.GetBool("isGrabbing"))
         {
             if (rightSideCheck && !justJumpR)
             {
@@ -163,20 +206,21 @@ public class PlayerController : MonoBehaviour
             }
             
         }
-        rb2d.velocity = movement;
+        if(!isDashing)
+            rb2d.velocity = movement;
     }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * jumpThreshold);
-        //DrawLine(transform.position + Vector3.up + Vector3.left, transform.position + Vector3.up + Vector3.left * 0.5f);
     }
 
     public void OnLanding()
     {
         animator.SetBool("isOnAir", false);
     }
+
     void SwitchDirection()
     {
         if (isFacingRight)
@@ -197,25 +241,71 @@ public class PlayerController : MonoBehaviour
         isFacingRight = !isFacingRight;
     }
 
-    //TODO check hardcoded values
-    void Crouch()
+    IEnumerator Dash()
     {
-        if(!isCrouching)
-        {
-            collider2d.size = new Vector2(1.3f,1.3f);   
-            collider2d.offset = new Vector2(0.0f, 0.65f);
-            speed /= crouchModifier;
-            followPivot.transform.position -= new Vector3(0, 1, 0);
-        }
+        inputEnabled = false;
+        canDash = false;
+        movement = Vector2.zero;
+        isDashing = true;
+        animator.SetBool("dash", true);
+        rb2d.velocity = new Vector2(0, 0);
+        rb2d.gravityScale = 0;
+        if (isFacingRight)
+            rb2d.AddForce(new Vector2(dashSpeed, 0), ForceMode2D.Impulse);
         else
-        {
-            collider2d.size = new Vector2(1.5f, 2.0f);
-            collider2d.offset = new Vector2(0.0f, 1.0f);
-            speed *= crouchModifier;
-            followPivot.transform.position += new Vector3(0, 1, 0);
-        }
-        isCrouching = !isCrouching;
-        CrouchEvent.Invoke();
+            rb2d.AddForce(new Vector2(-dashSpeed, 0), ForceMode2D.Impulse);
+        yield return new WaitForSeconds(dashDuration);
+        StartCoroutine("StopDashing");
+    }
+    IEnumerator StopDashing()
+    {
+        StopCoroutine("Dash");
+        movement = Vector2.zero;
+        rb2d.gravityScale = gravityScale;
+        inputEnabled = true;
+        isDashing = false;
+        animator.SetBool("dash", false);
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
+    //TODO check hardcoded values
+    IEnumerator Slide()
+    {
+        speed *= slideSpeedModifier;
+        canSlide = false;
+        isSliding = true;
+        inputEnabled = false;
+        animator.SetBool("isSliding", true);
+        collider2d.direction = CapsuleDirection2D.Horizontal;
+        collider2d.offset = new Vector2(0, 0.55f);
+        collider2d.size = new Vector2(2.3f, 1.1f);
+        
+        if (isFacingRight)
+            movement = new Vector2(speed, rb2d.velocity.y);
+        else
+            movement = new Vector2(-speed, rb2d.velocity.y);
+        
+            
+        SlideEvent.Invoke();
+        yield return new WaitForSeconds(slideDuration);
+        if (ceilingCheck)
+            wantToStandUp = true;
+        else
+            StartCoroutine("StopSliding");
+    }
+    IEnumerator StopSliding()
+    {
+        speed = normalSpeed;
+        movement = Vector2.zero; 
+        StopCoroutine("Slide");
+        collider2d.direction = CapsuleDirection2D.Vertical;
+        collider2d.offset = new Vector2(0, 1);
+        collider2d.size = new Vector2(1.3f, 2);
+        animator.SetBool("isSliding", false);
+        isSliding = false;
+        inputEnabled = true;
+        yield return new WaitForSeconds(slideCooldown);
+        canSlide = true;
     }
 
     IEnumerator JustJump(bool right)
