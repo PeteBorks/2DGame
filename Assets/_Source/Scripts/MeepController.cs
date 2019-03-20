@@ -4,69 +4,94 @@ using UnityEngine;
 
 public class MeepController : MonoBehaviour
 {
-
+    [Header("Movement")]
+    [SerializeField, Range(0, 10)]
+    float speed = 5f;
     [SerializeField]
-    GameObject target;
+    public GameObject mainCam;
     [SerializeField]
-    PlayerController pawnController;
-    [SerializeField]
-    float distanceThreshold = 2.0f;
+    Main mainScript;
     [SerializeField]
     SpriteRenderer sprite;
-    public float speed = 9.0f;
-    float slideSpeed, normalSpeed;
-    float distance;
-    bool isFacingRight = true;
+    public Collider2D collider2D5;
+    [HideInInspector]
+    public bool inputEnabled = false;
+    float dirNum;
+    public Rigidbody2D rb2D;
     Vector2 movement;
-    Rigidbody2D rb2d;
-    
+
     void Start()
     {
-        
-        normalSpeed = speed;
-        rb2d = GetComponent<Rigidbody2D>();
+        rb2D = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        
-        if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
-            SwitchDirection();
-        distance = Vector3.Distance(transform.position, target.transform.position);
-        
-
-    }
-
-    void FixedUpdate()
-    {
-       // if (distance > distanceThreshold)
-        //    transform.position = Vector2.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
-    }
-
-    void SwitchDirection()
-    {
-        if (isFacingRight)
+        // toggles sides when following depending on player position
+        if(!inputEnabled)
         {
-            sprite.flipX = true;
+            Vector3 heading = mainScript.playerPawn.transform.position - transform.position;
+            switch (AngleDir(transform.forward, heading, transform.up))
+            {
+                case 1:
+                    sprite.flipX = false;
+                    break;
+                case -1:
+                    sprite.flipX = true;
+                    break;
+            }
+        }
+
+        if (inputEnabled && ((movement.x < 0 && !sprite.flipX) || (movement.x > 0 && sprite.flipX)))
+            sprite.flipX = !sprite.flipX;
+
+            if (inputEnabled && Input.GetButtonDown("ChangePawn"))
+        {
+            mainScript.ChangePawn(1);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (inputEnabled)
+        {
+            movement = new Vector2(Input.GetAxis("Horizontal") * speed, Input.GetAxis("Vertical") * speed);
+            rb2D.AddForce(Vector2.ClampMagnitude(movement * 40, 40));
+        }
+        
+    }
+    
+    float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
+    {
+        Vector3 perp = Vector3.Cross(fwd, targetDir);
+        float dir = Vector3.Dot(perp, up);
+        if (dir > 0f)
+        {
+            return 1f;
+        }
+        else if (dir < 0f)
+        {
+            return -1f;
         }
         else
         {
-            sprite.flipX = false;
+            return 0f;
         }
-
-        isFacingRight = !isFacingRight;
     }
-    public void OnMasterCrouch()
+
+    public void DisableFollowing()
     {
-        if (speed == normalSpeed)
-        {
-            speed = slideSpeed;
-        }
-        else
-        {
-            speed = normalSpeed;
-        }
-        
-        
+        GetComponent<Pathfinding.AIDestinationSetter>().enabled = false;
+        GetComponent<Pathfinding.AIPath>().enabled = false;
+        GetComponent<Pathfinding.SimpleSmoothModifier>().enabled = false;
+        GetComponent<Pathfinding.FunnelModifier>().enabled = false;
+    }
+
+    public void EnableFollowing()
+    {
+        GetComponent<Pathfinding.AIDestinationSetter>().enabled = true;
+        GetComponent<Pathfinding.AIPath>().enabled = true;
+        GetComponent<Pathfinding.SimpleSmoothModifier>().enabled = true;
+        GetComponent<Pathfinding.FunnelModifier>().enabled = true;
     }
 }

@@ -13,21 +13,21 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField, Range(0,10)]
+    [SerializeField, Range(0, 10)]
     float speed = 1f;
-    [SerializeField, Range(0,2)]
+    [SerializeField, Range(0, 2)]
     float wallJumpDelay = 1f;
-    [SerializeField, Range(0,30)]
+    [SerializeField, Range(0, 30)]
     float dashSpeed = 14;
     [SerializeField, Range(0, 1)]
     float dashDuration = 0.2f;
     [SerializeField, Range(0, 4)]
     float dashCooldown = 0.5f;
-    [SerializeField, Range(1,2)]
+    [SerializeField, Range(1, 2)]
     float slideSpeedModifier = 1.3f;
-    [SerializeField, Range(0,1)]
+    [SerializeField, Range(0, 1)]
     float slideDuration = 0.5f;
-    [SerializeField, Range(0,4)]
+    [SerializeField, Range(0, 4)]
     float slideCooldown = 1f;
     [SerializeField, Range(0, 1)]
     float jumpThreshold = 0.1f;
@@ -36,15 +36,17 @@ public class PlayerController : MonoBehaviour
 
     [Header("References")]
     [SerializeField]
-    Animator animator;
+    Main mainScript;
+    [SerializeField]
+    public Animator animator;
     [SerializeField]
     LayerMask groundFilter;
     [SerializeField]
     LayerMask jumpWall;
     [SerializeField]
-    GameObject rightCam;
+    public GameObject rightCam;
     [SerializeField]
-    GameObject leftCam;
+    public GameObject leftCam;
     [SerializeField]
     SpriteRenderer sprite;
     [SerializeField]
@@ -56,10 +58,12 @@ public class PlayerController : MonoBehaviour
 
     float normalSpeed;
     float gravityScale;
+    [HideInInspector]
     public bool inputEnabled = true;
     bool canSlide = true;
     bool canDash = true;
-    bool isFacingRight = true;
+    [HideInInspector]
+    public bool isFacingRight = true;
     bool isGrounded = true;
     bool isSliding = false;
     bool isDashing = false;
@@ -70,17 +74,17 @@ public class PlayerController : MonoBehaviour
     bool justJumpR = false;
     bool justJumpL = false;
     bool jump;
-    
-    
+
+
     RaycastHit2D[] results = new RaycastHit2D[1];
     ContactFilter2D filter;
     ContactFilter2D jumpFilter;
-    Rigidbody2D rb2d;
+    public Rigidbody2D rb2D;
     CapsuleCollider2D collider2d;
 
     Vector2 movement;
 
-    
+
 
     void Start()
     {
@@ -99,11 +103,15 @@ public class PlayerController : MonoBehaviour
             maxDepth = 1,
             minDepth = -1
         };
-        rb2d = GetComponent<Rigidbody2D>();
+
+
+        rb2D = GetComponent<Rigidbody2D>();
         collider2d = GetComponent<CapsuleCollider2D>();
         normalSpeed = speed;
-        gravityScale = rb2d.gravityScale;
+        gravityScale = rb2D.gravityScale;
     }
+
+
 
     void Update()
     {
@@ -115,7 +123,7 @@ public class PlayerController : MonoBehaviour
         leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
 
         if (inputEnabled)
-            movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2d.velocity.y);
+            movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
         
         animator.SetFloat("speed", Mathf.Abs(movement.x));
 
@@ -138,6 +146,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (wantToStandUp && !ceilingCheck)
+        {
+            StartCoroutine("StopSliding");
+            wantToStandUp = false;
+        }
+
         if (wasGrounded && !isGrounded)
             animator.SetBool("isOnAir", true);
         else if (isGrounded && !wasGrounded)
@@ -152,6 +166,11 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine("StopDashing");
         }
+
+        if (inputEnabled && Input.GetButtonDown("ChangePawn") && (movement.x < 0.1f || animator.GetBool("isGrabbing")))
+        {
+            mainScript.ChangePawn(2);
+        }
        
     }
 
@@ -161,53 +180,51 @@ public class PlayerController : MonoBehaviour
         {
             if (rightSideCheck)
             {
-                rb2d.simulated = true;
-                movement = new Vector2(-15, jumpForce);
-                justJumpR = true;                
+                rb2D.simulated = true;
+                movement = new Vector2(-speed, jumpForce);
+                justJumpR = true;
                 justJumpL = false;
                 StartCoroutine(JustJump(true));
+                if (Input.GetAxis("Horizontal") > 0.1f)
+                    sprite.flipX = false;
             }
-            if(leftSideCheck)
+            if (leftSideCheck)
             {
-                rb2d.simulated = true;
-                movement = new Vector2(15, jumpForce);
-                justJumpL = true;               
+                rb2D.simulated = true;
+                movement = new Vector2(speed, jumpForce);
+                justJumpL = true;
                 justJumpR = false;
                 StartCoroutine(JustJump(false));
+                if (Input.GetAxis("Horizontal") < -0.1f)
+                    sprite.flipX = true;
             }
             animator.SetBool("isGrabbing", false);
             jump = false;
         }
-        else if(jump)
+        else if (jump)
         {
             movement.y = jumpForce;
             jump = false;
         }
 
-        if(wantToStandUp && !ceilingCheck)
-        {
-            StartCoroutine("StopSliding");
-            wantToStandUp = false;
-        }
-  
         if ((animator.GetBool("isOnAir") || isDashing) && !animator.GetBool("isGrabbing"))
         {
             if (rightSideCheck && !justJumpR)
             {
                 animator.SetBool("isGrabbing", true);
-                rb2d.simulated = false;
+                rb2D.simulated = false;
                 sprite.flipX = true;
             }     
             if (leftSideCheck && !justJumpL)
             {
                 animator.SetBool("isGrabbing", true);
-                rb2d.simulated = false;
+                rb2D.simulated = false;
                 sprite.flipX = false;
             }
             
         }
         if(!isDashing)
-            rb2d.velocity = movement;
+            rb2D.velocity = movement;
     }
 
     void OnDrawGizmosSelected()
@@ -248,12 +265,12 @@ public class PlayerController : MonoBehaviour
         movement = Vector2.zero;
         isDashing = true;
         animator.SetBool("dash", true);
-        rb2d.velocity = new Vector2(0, 0);
-        rb2d.gravityScale = 0;
+        rb2D.velocity = new Vector2(0, 0);
+        rb2D.gravityScale = 0;
         if (isFacingRight)
-            rb2d.AddForce(new Vector2(dashSpeed, 0), ForceMode2D.Impulse);
+            rb2D.AddForce(new Vector2(dashSpeed, 0), ForceMode2D.Impulse);
         else
-            rb2d.AddForce(new Vector2(-dashSpeed, 0), ForceMode2D.Impulse);
+            rb2D.AddForce(new Vector2(-dashSpeed, 0), ForceMode2D.Impulse);
         yield return new WaitForSeconds(dashDuration);
         StartCoroutine("StopDashing");
     }
@@ -261,7 +278,7 @@ public class PlayerController : MonoBehaviour
     {
         StopCoroutine("Dash");
         movement = Vector2.zero;
-        rb2d.gravityScale = gravityScale;
+        rb2D.gravityScale = gravityScale;
         inputEnabled = true;
         isDashing = false;
         animator.SetBool("dash", false);
@@ -281,9 +298,9 @@ public class PlayerController : MonoBehaviour
         collider2d.size = new Vector2(2.3f, 1.1f);
         
         if (isFacingRight)
-            movement = new Vector2(speed, rb2d.velocity.y);
+            movement = new Vector2(speed, rb2D.velocity.y);
         else
-            movement = new Vector2(-speed, rb2d.velocity.y);
+            movement = new Vector2(-speed, rb2D.velocity.y);
         
             
         SlideEvent.Invoke();
