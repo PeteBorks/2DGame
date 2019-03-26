@@ -7,6 +7,7 @@ public class MeepController : MonoBehaviour
     [Header("Movement")]
     [SerializeField, Range(0, 10)]
     float speed = 5f;
+    [Header("References")]
     [SerializeField]
     public GameObject mainCam;
     [SerializeField]
@@ -19,33 +20,31 @@ public class MeepController : MonoBehaviour
     float dirNum;
     public Rigidbody2D rb2D;
     Vector2 movement;
+    LookAt autoLook;
+
 
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
+        autoLook = GetComponent<LookAt>();
     }
 
     void Update()
     {
-        // toggles sides when following depending on player position
-        if(!inputEnabled)
-        {
-            Vector3 heading = mainScript.playerPawn.transform.position - transform.position;
-            switch (AngleDir(transform.forward, heading, transform.up))
-            {
-                case 1:
-                    sprite.flipX = false;
-                    break;
-                case -1:
-                    sprite.flipX = true;
-                    break;
-            }
-        }
+        if (!inputEnabled)
+            autoLook.isOn = true;
+        else
+            autoLook.isOn = false;
 
         if (inputEnabled && ((movement.x < 0 && !sprite.flipX) || (movement.x > 0 && sprite.flipX)))
             sprite.flipX = !sprite.flipX;
 
-            if (inputEnabled && Input.GetButtonDown("ChangePawn"))
+        if (sprite.flipX)
+            autoLook.lightsLeft();
+        else
+            autoLook.lightsRight();
+
+        if (inputEnabled && Input.GetButtonDown("ChangePawn"))
         {
             mainScript.ChangePawn(1);
         }
@@ -59,24 +58,6 @@ public class MeepController : MonoBehaviour
             rb2D.AddForce(Vector2.ClampMagnitude(movement * 40, 40));
         }
         
-    }
-    
-    float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
-    {
-        Vector3 perp = Vector3.Cross(fwd, targetDir);
-        float dir = Vector3.Dot(perp, up);
-        if (dir > 0f)
-        {
-            return 1f;
-        }
-        else if (dir < 0f)
-        {
-            return -1f;
-        }
-        else
-        {
-            return 0f;
-        }
     }
 
     public void DisableFollowing()

@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
     float jumpThreshold = 0.1f;
     [SerializeField, Range(5, 25)]
     float jumpForce = 5f;
+    [SerializeField, Range(0, 2)]
+    float fireCooldown = 0.3f;
 
     [Header("References")]
     [SerializeField]
@@ -51,11 +53,18 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer sprite;
     [SerializeField]
     GameObject followPivot;
+    [SerializeField]
+    GameObject bullet;
+    [SerializeField]
+    GameObject barrelFX;
+    [SerializeField]
+    GameObject barrelFXSocket;
 
     [Header("Events")]
     [Space]
     public UnityEvent SlideEvent;
 
+    
     float normalSpeed;
     float gravityScale;
     [HideInInspector]
@@ -74,16 +83,20 @@ public class PlayerController : MonoBehaviour
     bool justJumpR = false;
     bool justJumpL = false;
     bool jump;
-
-
+    bool isOnTrigger = false;
+    bool isRotSliding;
+    GameObject interactableObject;
     RaycastHit2D[] results = new RaycastHit2D[1];
     ContactFilter2D filter;
     ContactFilter2D jumpFilter;
+    [HideInInspector]
     public Rigidbody2D rb2D;
     CapsuleCollider2D collider2d;
-
+    Vector3 barrelFXDefaultPos;
     Vector2 movement;
-
+    RaycastHit2D hit;
+    Vector3 axis;
+    float angle;
 
 
     void Start()
@@ -104,23 +117,26 @@ public class PlayerController : MonoBehaviour
             minDepth = -1
         };
 
-
+        barrelFXDefaultPos = barrelFXSocket.transform.localPosition;
         rb2D = GetComponent<Rigidbody2D>();
         collider2d = GetComponent<CapsuleCollider2D>();
         normalSpeed = speed;
         gravityScale = rb2D.gravityScale;
     }
 
-
-
     void Update()
     {
         bool wasGrounded = isGrounded;
 
-        isGrounded = collider2d.Raycast(Vector2.down, filter, results, collider2d.bounds.extents.y + jumpThreshold) == 1;
+        // for com array de pontos de origem
+        isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
+                      (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1) ||
+                      (Physics2D.Raycast(transform.position + -transform.right * 0.4f + - transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1));
+        Debug.Log(Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold));
         ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
         rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
         leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
+        
 
         if (inputEnabled)
             movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
@@ -136,46 +152,88 @@ public class PlayerController : MonoBehaviour
             else if (isGrounded && canSlide)
                 StartCoroutine("Slide");
 
-        if ((inputEnabled || animator.GetBool("isSliding")) && Input.GetButtonDown("Jump") && (isGrounded || animator.GetBool("isGrabbing")) && !ceilingCheck)
+        if ((inputEnabled || (animator.GetBool("isSliding") && !ceilingCheck || isRotSliding)) && Input.GetButtonDown("Jump") && (isGrounded || animator.GetBool("isGrabbing")))
         {
             jump = true;
             animator.SetBool("isOnAir", true);
             if (isSliding)
             {
-                StartCoroutine("StopSliding");
+                StartCoroutine(StopSliding());
             }
+        }
+
+        if(inputEnabled && Input.GetButtonDown("Fire1") && isGrounded)
+        {
+            animator.SetTrigger("fire");
+            Instantiate(barrelFX, barrelFXSocket.transform);
+            GameObject shot = Instantiate(bullet, barrelFXSocket.transform.position, Quaternion.identity);
+            if(isFacingRight)
+                shot.GetComponent<Bullet>().isRight = true;
+
+            StartCoroutine(FireDelay());
+
         }
 
         if (wantToStandUp && !ceilingCheck)
         {
-            StartCoroutine("StopSliding");
+            StartCoroutine(StopSliding());
             wantToStandUp = false;
         }
 
-        if (wasGrounded && !isGrounded)
+        if (wasGrounded && !isGrounded && !isRotSliding)
             animator.SetBool("isOnAir", true);
-        else if (isGrounded && !wasGrounded)
+        else if (isGrounded && !wasGrounded && !isRotSliding)
             OnLanding();
 
         if (!isGrounded && isSliding)
         {
-            StartCoroutine("StopSliding");
+            StartCoroutine(StopSliding());
         }
 
         if(isDashing && animator.GetBool("isGrabbing"))
         {
-            StartCoroutine("StopDashing");
+            StartCoroutine(StopDashing());
         }
 
-        if (inputEnabled && Input.GetButtonDown("ChangePawn") && (movement.x < 0.1f || animator.GetBool("isGrabbing")))
+        if (inputEnabled && Input.GetButtonDown("ChangePawn") && ((movement.x < 0.1f && isGrounded) || animator.GetBool("isGrabbing")))
         {
             mainScript.ChangePawn(2);
         }
-       
+
+        if (inputEnabled &&Input.GetButtonDown("Interact") && isOnTrigger)
+        {
+            StartCoroutine(interactableObject.GetComponent<Button>().OnInteract());
+        }
+
+        hit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down,0.5f);
+        axis = Vector3.Cross(-transform.up, -hit.normal);
+        if (axis != Vector3.zero)
+        {
+            angle = Mathf.Atan2(Vector3.Magnitude(axis), Vector3.Dot(-transform.up, -hit.normal));
+            transform.RotateAround(axis,angle);
+            inputEnabled = false;
+            animator.SetBool("isSliding", true);
+            isRotSliding = true;
+            rb2D.velocity = Vector2.zero;
+            movement = Vector2.zero;
+            
+        }
+        else if(!isGrounded && !hit)
+        {
+            animator.SetBool("isSliding", false);
+            isRotSliding = false;
+            inputEnabled = true;
+            transform.rotation = Quaternion.identity;
+        }
+        else if (isRotSliding)
+        {
+            movement = new Vector2(9, -6.7f);
+        }      
     }
 
     void FixedUpdate()
     {
+        
         if (jump && animator.GetBool("isGrabbing"))
         {
             if (rightSideCheck)
@@ -203,7 +261,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (jump)
         {
-            movement.y = jumpForce;
+            movement.y = jumpForce; // AddForce
             jump = false;
         }
 
@@ -225,12 +283,27 @@ public class PlayerController : MonoBehaviour
         }
         if(!isDashing)
             rb2D.velocity = movement;
+
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        isOnTrigger = true;
+        interactableObject = collision.gameObject;
+    }
+
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        isOnTrigger = false;
     }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * jumpThreshold);
+        Gizmos.DrawLine(transform.position, transform.position + -transform.up * jumpThreshold);
+        Gizmos.DrawLine(transform.position + new Vector3(0.4f, 0, 0), transform.position + -transform.up  * jumpThreshold + new Vector3(0.4f, 0, 0));
+        Gizmos.DrawLine(transform.position + new Vector3(-0.4f, 0, 0), transform.position + -transform.up  * jumpThreshold + new Vector3(-0.4f, 0, 0));
+        //Gizmos.DrawSphere(hit.point, 0.1f);
     }
 
     public void OnLanding()
@@ -242,6 +315,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isFacingRight)
         {
+            barrelFXSocket.transform.localScale = new Vector3(-1, 1, 1);
+            barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
             leftCam.SetActive(true);
             rightCam.SetActive(false);
             if(!animator.GetBool("isGrabbing"))
@@ -249,6 +324,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            barrelFXSocket.transform.localScale = new Vector3(1, 1, 1);
+            barrelFXSocket.transform.localPosition = barrelFXDefaultPos;
             leftCam.SetActive(false);
             rightCam.SetActive(true);
             if (!animator.GetBool("isGrabbing"))
@@ -258,6 +335,14 @@ public class PlayerController : MonoBehaviour
         isFacingRight = !isFacingRight;
     }
 
+
+    IEnumerator FireDelay()
+    {
+        inputEnabled = false;
+        movement = new Vector2(0, rb2D.velocity.y);
+        yield return new WaitForSeconds(fireCooldown);
+        inputEnabled = true;
+    }
     IEnumerator Dash()
     {
         inputEnabled = false;
@@ -317,7 +402,7 @@ public class PlayerController : MonoBehaviour
         StopCoroutine("Slide");
         collider2d.direction = CapsuleDirection2D.Vertical;
         collider2d.offset = new Vector2(0, 1);
-        collider2d.size = new Vector2(1.3f, 2);
+        collider2d.size = new Vector2(1, 2);
         animator.SetBool("isSliding", false);
         isSliding = false;
         inputEnabled = true;

@@ -18,9 +18,9 @@ TagManager:
   - PP
   - WallJump
   - PlayerLayer
-  - 
-  - 
-  - 
+  - Background
+  - light
+  - GroundOnly
   - 
   - 
   - 
