@@ -21,23 +21,16 @@ public class Bullet : MonoBehaviour
         collider2 = GetComponent<CapsuleCollider2D>();
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-
-    }
-    void Update()
-    {
-        if (isRight)
-        {
-            transform.position = new Vector2(transform.position.x + speed, transform.position.y);
-        }
-
-        else
+        if (!isRight)
         {
             transform.localScale = new Vector3(-1, 1, 1);
-            transform.position = new Vector2(transform.position.x - speed, transform.position.y);
+            speed = -speed;
         }
+        rb2d.velocity = new Vector2(speed, 0);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    void OnTriggerEnter2D(Collider2D collision)
     {
         hit = Instantiate(hitFX, transform.position, Quaternion.identity);
         if (!isRight)
@@ -49,6 +42,10 @@ public class Bullet : MonoBehaviour
         {
             hit.transform.localScale = new Vector3(1, 1, 1);
             hit.transform.position -= new Vector3(0.2f, 0, 0);
+        }
+        if (collision.gameObject.GetComponent<ButtonEnable>())
+        {
+            collision.gameObject.GetComponent<ButtonEnable>().OnInteract();
         }
             
         

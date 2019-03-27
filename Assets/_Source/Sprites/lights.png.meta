@@ -45,10 +45,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -64,9 +64,9 @@ TextureImporter:
   - serializedVersion: 2
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
-    resizeAlgorithm: 1
+    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -75,9 +75,9 @@ TextureImporter:
   - serializedVersion: 2
     buildTarget: Standalone
     maxTextureSize: 4096
-    resizeAlgorithm: 1
+    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -90,10 +90,10 @@ TextureImporter:
       name: lights_0
       rect:
         serializedVersion: 2
-        x: 34
-        y: 54
-        width: 632
-        height: 959
+        x: 0
+        y: 670
+        width: 1543
+        height: 2827
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -101,7 +101,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b94c7b0e3311a984aa704a974481081d
+      spriteID: 63ad08e1f10824c4cb48e998d87e5a0a
       vertices: []
       indices: 
       edges: []
@@ -110,18 +110,18 @@ TextureImporter:
       name: lights_1
       rect:
         serializedVersion: 2
-        x: 669
-        y: 59
-        width: 515
-        height: 955
+        x: 1557
+        y: 1530
+        width: 1205
+        height: 1314
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e27deb6bc828a654a9dcadcca1f09eef
+      spriteID: 98f6f66ed55fd184ba84b4ca3a249b4f
       vertices: []
       indices: 
       edges: []
@@ -130,10 +130,10 @@ TextureImporter:
       name: lights_2
       rect:
         serializedVersion: 2
-        x: 1191
-        y: 12
-        width: 579
-        height: 1006
+        x: 2776
+        y: 873
+        width: 1267
+        height: 2466
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,7 +141,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 57e68b412ca56dc4ea332400e9e05f41
+      spriteID: cdb89d98e1418b547889a31d6a1bc054
       vertices: []
       indices: 
       edges: []
@@ -149,7 +149,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 77accf3de48db7a4ea3a4a625c8a19d2
+    spriteID: f235ebbd2119e504184d7c35349a4008
     vertices: []
     indices: 
     edges: []

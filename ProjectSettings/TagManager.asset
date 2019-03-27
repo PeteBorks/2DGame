@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WallJump
   - Stellar
+  - button
   layers:
   - Default
   - TransparentFX

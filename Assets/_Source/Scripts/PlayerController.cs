@@ -77,8 +77,10 @@ public class PlayerController : MonoBehaviour
     bool isSliding = false;
     bool isDashing = false;
     bool ceilingCheck = false;
-    bool rightSideCheck = false;
-    bool leftSideCheck = false;
+    [HideInInspector]
+    public bool rightSideCheck = false;
+    [HideInInspector]
+    public bool leftSideCheck = false;
     bool wantToStandUp = false;
     bool justJumpR = false;
     bool justJumpL = false;
@@ -132,7 +134,6 @@ public class PlayerController : MonoBehaviour
         isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
                       (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1) ||
                       (Physics2D.Raycast(transform.position + -transform.right * 0.4f + - transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1));
-        Debug.Log(Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold));
         ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
         rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
         leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
@@ -146,7 +147,7 @@ public class PlayerController : MonoBehaviour
         if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
             SwitchDirection();
 
-        if (inputEnabled && Input.GetButtonDown("Fire3") && !ceilingCheck)
+        if (inputEnabled && Input.GetButtonDown("Fire3"))
             if (animator.GetBool("isOnAir") && canDash)
                 StartCoroutine("Dash");
             else if (isGrounded && canSlide)
@@ -200,9 +201,9 @@ public class PlayerController : MonoBehaviour
             mainScript.ChangePawn(2);
         }
 
-        if (inputEnabled &&Input.GetButtonDown("Interact") && isOnTrigger)
+        if (inputEnabled && Input.GetButtonDown("Interact") && isOnTrigger)
         {
-            StartCoroutine(interactableObject.GetComponent<Button>().OnInteract());
+            StartCoroutine(interactableObject.GetComponent<ButtonAction>().OnInteract());
         }
 
         hit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down,0.5f);
@@ -223,6 +224,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isSliding", false);
             isRotSliding = false;
             inputEnabled = true;
+            animator.SetBool("isOnAir", true); 
             transform.rotation = Quaternion.identity;
         }
         else if (isRotSliding)
@@ -238,23 +240,15 @@ public class PlayerController : MonoBehaviour
         {
             if (rightSideCheck)
             {
-                rb2D.simulated = true;
+                RightSideDetach();
                 movement = new Vector2(-speed, jumpForce);
-                justJumpR = true;
-                justJumpL = false;
-                StartCoroutine(JustJump(true));
-                if (Input.GetAxis("Horizontal") > 0.1f)
-                    sprite.flipX = false;
             }
             if (leftSideCheck)
             {
-                rb2D.simulated = true;
-                movement = new Vector2(speed, jumpForce);
-                justJumpL = true;
-                justJumpR = false;
-                StartCoroutine(JustJump(false));
+                LeftSideDetach();
                 if (Input.GetAxis("Horizontal") < -0.1f)
                     sprite.flipX = true;
+                movement = new Vector2(speed, jumpForce);
             }
             animator.SetBool("isGrabbing", false);
             jump = false;
@@ -284,6 +278,24 @@ public class PlayerController : MonoBehaviour
         if(!isDashing)
             rb2D.velocity = movement;
 
+    }
+
+    public void LeftSideDetach()
+    {
+        rb2D.simulated = true;
+        justJumpL = true;
+        justJumpR = false;
+        StartCoroutine(JustJump(false));
+    }
+
+    public void RightSideDetach()
+    {
+        rb2D.simulated = true;
+        justJumpR = true;
+        justJumpL = false;
+        StartCoroutine(JustJump(true));
+        if (Input.GetAxis("Horizontal") > 0.1f)
+            sprite.flipX = false;
     }
 
     void OnTriggerEnter2D(Collider2D collision)
