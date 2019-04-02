@@ -9,6 +9,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float speed = 20;
+    public float damage = 20;
     public GameObject hitFX;
     [HideInInspector]
     public bool isRight = false;
@@ -23,7 +24,7 @@ public class Bullet : MonoBehaviour
         rb2d.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         if (!isRight)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
             speed = -speed;
         }
         rb2d.velocity = new Vector2(speed, 0);
@@ -32,23 +33,29 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        hit = Instantiate(hitFX, transform.position, Quaternion.identity);
-        if (!isRight)
+        if(!collision.GetComponent<Bullet>())
         {
-            hit.transform.localScale = new Vector3(-1, 1, 1);
-            hit.transform.position -= new Vector3(-0.2f, 0, 0);
+            hit = Instantiate(hitFX, transform.position, Quaternion.identity);
+            if (!isRight)
+            {
+                hit.transform.localScale = new Vector3(-1, 1, 1);
+                hit.transform.position -= new Vector3(-0.2f, 0, 0);
+            }
+            else
+            {
+                hit.transform.localScale = new Vector3(1, 1, 1);
+                hit.transform.position -= new Vector3(0.2f, 0, 0);
+            }
+            if (collision.gameObject.GetComponent<ButtonEnable>())
+            {
+                collision.gameObject.GetComponent<ButtonEnable>().OnInteract();
+            }
+            if(collision.GetComponent<BaseEntity>())
+            {
+                collision.GetComponent<BaseEntity>().TakeDamage(damage);
+            }
+            Destroy(gameObject);
         }
-        else
-        {
-            hit.transform.localScale = new Vector3(1, 1, 1);
-            hit.transform.position -= new Vector3(0.2f, 0, 0);
-        }
-        if (collision.gameObject.GetComponent<ButtonEnable>())
-        {
-            collision.gameObject.GetComponent<ButtonEnable>().OnInteract();
-        }
-            
         
-        Destroy(gameObject);
     }
 }

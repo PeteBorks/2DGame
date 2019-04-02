@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [SelectionBase]
-public class PlayerController : MonoBehaviour
+public class PlayerController : BaseEntity
 {
     [Header("Movement")]
     [SerializeField, Range(0, 10)]
@@ -35,6 +35,10 @@ public class PlayerController : MonoBehaviour
     float jumpForce = 5f;
     [SerializeField, Range(0, 2)]
     float fireCooldown = 0.3f;
+    [SerializeField, Range(0, 4)]
+    float cameraShakeAmplitude;
+    [SerializeField, Range(0, 4)]
+    float cameraShakeFrequency;
 
     [Header("References")]
     [SerializeField]
@@ -67,7 +71,7 @@ public class PlayerController : MonoBehaviour
     
     float normalSpeed;
     float gravityScale;
-    [HideInInspector]
+
     public bool inputEnabled = true;
     bool canSlide = true;
     bool canDash = true;
@@ -95,20 +99,25 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb2D;
     CapsuleCollider2D collider2d;
     Vector3 barrelFXDefaultPos;
+    Vector3 barrelFXJumpingPos;
     Vector2 movement;
     RaycastHit2D hit;
     Vector3 axis;
+    CinemachineVirtualCamera currentCam;
+    CinemachineBasicMultiChannelPerlin camNoise;
     float angle;
 
 
     void Start()
     {
+        currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();
+        camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         filter = new ContactFilter2D()
         {
-            useLayerMask = false,
+            useLayerMask = true,
             layerMask = groundFilter,
-            maxDepth = 1,
-            minDepth = -1
+            maxDepth = 10,
+            minDepth = -10
         };
 
         jumpFilter = new ContactFilter2D()
@@ -120,6 +129,7 @@ public class PlayerController : MonoBehaviour
         };
 
         barrelFXDefaultPos = barrelFXSocket.transform.localPosition;
+        barrelFXJumpingPos = new Vector3(barrelFXSocket.transform.localPosition.x, barrelFXSocket.transform.localPosition.y + 0.3f, barrelFXSocket.transform.localPosition.z);
         rb2D = GetComponent<Rigidbody2D>();
         collider2d = GetComponent<CapsuleCollider2D>();
         normalSpeed = speed;
@@ -130,7 +140,6 @@ public class PlayerController : MonoBehaviour
     {
         bool wasGrounded = isGrounded;
 
-        // for com array de pontos de origem
         isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
                       (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1) ||
                       (Physics2D.Raycast(transform.position + -transform.right * 0.4f + - transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1));
@@ -156,6 +165,10 @@ public class PlayerController : MonoBehaviour
         if ((inputEnabled || (animator.GetBool("isSliding") && !ceilingCheck || isRotSliding)) && Input.GetButtonDown("Jump") && (isGrounded || animator.GetBool("isGrabbing")))
         {
             jump = true;
+            if(isFacingRight)
+                barrelFXSocket.transform.localPosition = barrelFXJumpingPos;
+            else
+                barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);
             animator.SetBool("isOnAir", true);
             if (isSliding)
             {
@@ -163,16 +176,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(inputEnabled && Input.GetButtonDown("Fire1") && isGrounded)
+        if(inputEnabled && Input.GetButtonDown("Fire1") && !animator.GetBool("isGrabbing"))
         {
-            animator.SetTrigger("fire");
             Instantiate(barrelFX, barrelFXSocket.transform);
             GameObject shot = Instantiate(bullet, barrelFXSocket.transform.position, Quaternion.identity);
-            if(isFacingRight)
-                shot.GetComponent<Bullet>().isRight = true;
-
+            animator.SetTrigger("fire");
             StartCoroutine(FireDelay());
-
+            if (isFacingRight)
+                shot.GetComponent<Bullet>().isRight = true;
         }
 
         if (wantToStandUp && !ceilingCheck)
@@ -208,7 +219,7 @@ public class PlayerController : MonoBehaviour
 
         hit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down,0.5f);
         axis = Vector3.Cross(-transform.up, -hit.normal);
-        if (axis != Vector3.zero)
+        if (axis != Vector3.zero && !hit.collider.CompareTag("Enemy"))
         {
             angle = Mathf.Atan2(Vector3.Magnitude(axis), Vector3.Dot(-transform.up, -hit.normal));
             transform.RotateAround(axis,angle);
@@ -219,7 +230,7 @@ public class PlayerController : MonoBehaviour
             movement = Vector2.zero;
             
         }
-        else if(!isGrounded && !hit)
+        else if((!isGrounded && !hit))
         {
             animator.SetBool("isSliding", false);
             isRotSliding = false;
@@ -230,12 +241,11 @@ public class PlayerController : MonoBehaviour
         else if (isRotSliding)
         {
             movement = new Vector2(9, -6.7f);
-        }      
+        }
     }
 
     void FixedUpdate()
     {
-        
         if (jump && animator.GetBool("isGrabbing"))
         {
             if (rightSideCheck)
@@ -263,12 +273,14 @@ public class PlayerController : MonoBehaviour
         {
             if (rightSideCheck && !justJumpR)
             {
+                animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
                 rb2D.simulated = false;
                 sprite.flipX = true;
             }     
             if (leftSideCheck && !justJumpL)
             {
+                animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
                 rb2D.simulated = false;
                 sprite.flipX = false;
@@ -321,6 +333,25 @@ public class PlayerController : MonoBehaviour
     public void OnLanding()
     {
         animator.SetBool("isOnAir", false);
+        animator.SetBool("isFiring", false);
+        if(isFacingRight)
+            barrelFXSocket.transform.localPosition = barrelFXDefaultPos;
+        else
+            barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
+    }
+
+    public void Hit(bool b)
+    {
+        if (b)
+        {
+            if(!animator.GetBool("isFiring"))
+                animator.SetTrigger("hit");
+            inputEnabled = false;
+            movement = new Vector2(0, rb2D.velocity.y);
+            this.DelayedCall(0.25f, () => Hit(false));
+        }
+        else
+            inputEnabled = true;  
     }
 
     void SwitchDirection()
@@ -328,9 +359,13 @@ public class PlayerController : MonoBehaviour
         if (isFacingRight)
         {
             barrelFXSocket.transform.localScale = new Vector3(-1, 1, 1);
-            barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
+            if (isGrounded)
+                barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
+            else
+                barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);
             leftCam.SetActive(true);
             rightCam.SetActive(false);
+            currentCam = leftCam.GetComponent<CinemachineVirtualCamera>();
             if(!animator.GetBool("isGrabbing"))
                 sprite.flipX = true;
         }
@@ -340,20 +375,28 @@ public class PlayerController : MonoBehaviour
             barrelFXSocket.transform.localPosition = barrelFXDefaultPos;
             leftCam.SetActive(false);
             rightCam.SetActive(true);
+            currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();
             if (!animator.GetBool("isGrabbing"))
                 sprite.flipX = false;
         }
-        
+        camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         isFacingRight = !isFacingRight;
     }
 
 
     IEnumerator FireDelay()
     {
+        animator.SetBool("isFiring", true);
+        camNoise.m_AmplitudeGain = cameraShakeAmplitude;
+        camNoise.m_FrequencyGain = cameraShakeFrequency;
         inputEnabled = false;
         movement = new Vector2(0, rb2D.velocity.y);
         yield return new WaitForSeconds(fireCooldown);
+        camNoise.m_AmplitudeGain = 0;
+        camNoise.m_FrequencyGain = 0;
         inputEnabled = true;
+        if(isGrounded)
+            animator.SetBool("isFiring", false);
     }
     IEnumerator Dash()
     {
@@ -362,6 +405,7 @@ public class PlayerController : MonoBehaviour
         movement = Vector2.zero;
         isDashing = true;
         animator.SetBool("dash", true);
+        animator.SetBool("isFiring", false);
         rb2D.velocity = new Vector2(0, 0);
         rb2D.gravityScale = 0;
         if (isFacingRight)

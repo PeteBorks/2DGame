@@ -20,7 +20,7 @@ public class LookAt : MonoBehaviour
 
     void Update()
     {
-        if(isOn)
+        if(isOn && target)
         {
             Vector3 heading = target.transform.position - transform.position;
             switch (AngleDir(transform.forward, heading, transform.up))
@@ -48,14 +48,14 @@ public class LookAt : MonoBehaviour
 
     public void lightsRight()
     {
-        light1.transform.localPosition = new Vector3(0.07f, light1.transform.localPosition.y, -0.07f);
-        light2.transform.localPosition = new Vector3(0.2f, light2.transform.localPosition.y, -0.07f);
+        light1.transform.localPosition = new Vector3(0.37f, light1.transform.localPosition.y, -0.07f);
+        light2.transform.localPosition = new Vector3(1.11f, light2.transform.localPosition.y, -0.07f);
     }
 
     public void lightsLeft()
     {
-        light1.transform.localPosition = new Vector3(-0.07f, light1.transform.localPosition.y, -0.07f);
-        light2.transform.localPosition = new Vector3(-0.2f, light2.transform.localPosition.y, -0.07f);
+        light1.transform.localPosition = new Vector3(-0.37f, light1.transform.localPosition.y, -0.07f);
+        light2.transform.localPosition = new Vector3(-1.11f, light2.transform.localPosition.y, -0.07f);
     }
 
     float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
