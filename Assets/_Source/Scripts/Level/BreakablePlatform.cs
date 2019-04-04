@@ -21,12 +21,15 @@ public class BreakablePlatform : MonoBehaviour
     public AnimationCurve transitionCurve;
     public Light [] l;
     public PlayerController player;
+    [HideInInspector]
+    public bool coroutineStarted;
 
     void Start()
     {
         bcollider2D = GetComponent<BoxCollider2D>();
     }
-    public void OnCollisionEnter2D(Collision2D collision)
+
+    void OnCollisionEnter2D(Collision2D collision)
     {
         StartCoroutine(BreakBlock(DestroyBlock));
         player = collision.gameObject.GetComponent<PlayerController>(); ;
@@ -71,6 +74,7 @@ public class BreakablePlatform : MonoBehaviour
         for (int i = 0; i < l.Length; i++)
             l[i].enabled = true;
         sprite.color = defaultColor;
+        coroutineStarted = false;
     }
 
     void OnValidate()

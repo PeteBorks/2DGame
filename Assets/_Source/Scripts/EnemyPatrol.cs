@@ -40,7 +40,7 @@ public class EnemyPatrol : BaseEntity
     bool canBeHit = true;
     EnemyState state;
     SpriteRenderer sprite;
-    Animator animator;
+    public Animator animator;
     GameObject target;
     Ray detectionRay;
     RaycastHit2D hit;
@@ -76,9 +76,6 @@ public class EnemyPatrol : BaseEntity
                     Patrol();
                     break;
             }
-        else
-            Destroy(gameObject);
-
     }
 
     void Attack()

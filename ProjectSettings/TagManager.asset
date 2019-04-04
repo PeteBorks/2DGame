@@ -19,7 +19,7 @@ TagManager:
   - 
   - PP
   - WallJump
-  - PlayerLayer
+  - Player
   - Background
   - light
   - GroundOnly
@@ -42,6 +42,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2296840639
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 2656523317
+    locked: 0
+  - name: Player
+    uniqueID: 2474419207
+    locked: 0
+  - name: Fog
+    uniqueID: 3040902189
     locked: 0

@@ -115,7 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 50
   defaultState: 1
-  fireCooldown: 1.7
+  fireCooldown: 2
   detectionDistance: 15
   flipSide: 0
   bullet: {fileID: 6497594921828617317, guid: ef12fe364a3678344a836ad292660b29, type: 3}

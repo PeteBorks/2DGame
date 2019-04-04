@@ -30,18 +30,25 @@ public class BaseEntity : MonoBehaviour
         {
             health = 0;
             if (gameObject.GetComponent<EnemyPatrol>())
-                gameObject.GetComponent<EnemyPatrol>().DamageFeedback(true);
+            {
+                gameObject.GetComponent<EnemyPatrol>().animator.SetBool("isDead", true);
+                this.DelayedCall(2, () => DestroyThis());
+            }
             if (gameObject.GetComponent<PlayerController>())
             {
                 gameObject.GetComponent<PlayerController>().animator.SetBool("isDead", true);
                 gameObject.GetComponent<PlayerController>().inputEnabled = false;
-            }
-                
+            } 
             gameObject.GetComponent<Collider2D>().enabled = false;
             gameObject.GetComponent<Rigidbody2D>().simulated = false;
             
         }
         
+    }
+
+    void DestroyThis()
+    {
+        Destroy(gameObject);
     }
 
     void Update()

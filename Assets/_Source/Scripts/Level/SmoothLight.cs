@@ -21,7 +21,7 @@ public class SmoothLight : MonoBehaviour
     private void Update()
     {
         float t = Mathf.PingPong(Time.time, duration) / duration;
-        l.intensity = Mathf.Lerp(0, 5, t);
+        l.intensity = Mathf.Lerp(intensity1, intensity2, t);
     }
 
     private void OnDisable()
