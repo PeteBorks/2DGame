@@ -11,6 +11,7 @@ public class Bullet : MonoBehaviour
     public float speed = 20;
     public float damage = 20;
     public GameObject hitFX;
+    public LayerMask ignoreMask;
     [HideInInspector]
     public bool isRight = false;
     Collider2D collider2;
@@ -33,7 +34,7 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if(!collision.GetComponent<Bullet>())
+        if(!collision.GetComponent<Bullet>() && !ignoreMask.Contains(collision.gameObject.layer))
         {
             hit = Instantiate(hitFX, transform.position, Quaternion.identity);
             if (!isRight)

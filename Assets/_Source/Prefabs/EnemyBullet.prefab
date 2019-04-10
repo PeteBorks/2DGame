@@ -343,6 +343,9 @@ MonoBehaviour:
   speed: 15
   damage: 10
   hitFX: {fileID: 3800836507407817052, guid: 2d0d72b4e9291de4daa31b9278e4e2ad, type: 3}
+  ignoreMask:
+    serializedVersion: 2
+    m_Bits: 4
   isRight: 0
 --- !u!114 &280456748493571319
 MonoBehaviour:

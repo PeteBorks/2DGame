@@ -21,6 +21,11 @@ public static class Extensions
         }
     }
 
+     public static bool Contains(this LayerMask mask, int layer)
+     {
+         return mask == (mask | (1 << layer));
+     }
+     
     public static Coroutine DelayedCall(this MonoBehaviour monoScript, float delay, Action call)
     {
         return monoScript.StartCoroutine(DelayedCallRoutine(delay, call));
