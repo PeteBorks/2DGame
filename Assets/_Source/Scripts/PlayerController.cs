@@ -1,9 +1,9 @@
-﻿/**
+/**
  * PlayerController.cs
  * Created by: Pedro Borges
  * Created on: 04/03/19 (dd/mm/yy)
  */
-
+ 
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
@@ -49,9 +49,7 @@ public class PlayerController : BaseEntity
     LayerMask groundFilter;
     [SerializeField]
     LayerMask jumpWall;
-    [SerializeField]
     public GameObject rightCam;
-    [SerializeField]
     public GameObject leftCam;
     [SerializeField]
     SpriteRenderer sprite;
@@ -103,7 +101,7 @@ public class PlayerController : BaseEntity
     Vector2 movement;
     RaycastHit2D hit;
     Vector3 axis;
-    CinemachineVirtualCamera currentCam;
+    public CinemachineVirtualCamera currentCam;
     CinemachineBasicMultiChannelPerlin camNoise;
     float angle;
 

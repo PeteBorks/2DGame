@@ -3,6 +3,14 @@
 	{
 		"selected_items":
 		[
+			[
+				"PLayer",
+				"PlayerController()\tPlayerController()"
+			],
+			[
+				"GetComponent",
+				"GetComponent<T>()\tT"
+			]
 		]
 	},
 	"buffers":
@@ -19,13 +27,11 @@
 			}
 		},
 		{
-			"contents": "/**\n * PlayerController.cs\n * Created by: Pedro Borges\n * Created on: 04/03/19 (dd/mm/yy)\n */\n \nusing System.Collections;\nusing Cinemachine;\nusing UnityEngine;\nusing UnityEngine.Events;\n\n[SelectionBase]\npublic class PlayerController : BaseEntity\n{\n    [Header(\"Movement\")]\n    [SerializeField, Range(0, 10)]\n    float speed = 1f;\n    [SerializeField, Range(0, 2)]\n    float wallJumpDelay = 1f;\n    [SerializeField, Range(0, 30)]\n    float dashSpeed = 14;\n    [SerializeField, Range(0, 1)]\n    float dashDuration = 0.2f;\n    [SerializeField, Range(0, 4)]\n    float dashCooldown = 0.5f;\n    [SerializeField, Range(1, 2)]\n    float slideSpeedModifier = 1.3f;\n    [SerializeField, Range(0, 1)]\n    float slideDuration = 0.5f;\n    [SerializeField, Range(0, 4)]\n    float slideCooldown = 1f;\n    [SerializeField, Range(0, 1)]\n    float jumpThreshold = 0.1f;\n    [SerializeField, Range(5, 25)]\n    float jumpForce = 5f;\n    [SerializeField, Range(0, 2)]\n    float fireCooldown = 0.3f;\n    [SerializeField, Range(0, 4)]\n    float cameraShakeAmplitude;\n    [SerializeField, Range(0, 4)]\n    float cameraShakeFrequency;\n\n    [Header(\"References\")]\n    [SerializeField]\n    Main mainScript;\n    [SerializeField]\n    public Animator animator;\n    [SerializeField]\n    LayerMask groundFilter;\n    [SerializeField]\n    LayerMask jumpWall;\n    [SerializeField]\n    public GameObject rightCam;\n    [SerializeField]\n    public GameObject leftCam;\n    [SerializeField]\n    SpriteRenderer sprite;\n    [SerializeField]\n    GameObject followPivot;\n    [SerializeField]\n    GameObject bullet;\n    [SerializeField]\n    GameObject barrelFX;\n    [SerializeField]\n    GameObject barrelFXSocket;\n\n    [Header(\"Events\")]\n    [Space]\n    public UnityEvent SlideEvent;\n\n    \n    float normalSpeed;\n    float gravityScale;\n\n    public bool inputEnabled = true;\n    bool canSlide = true;\n    bool canDash = true;\n    [HideInInspector]\n    public bool isFacingRight = true;\n    bool isGrounded = true;\n    bool isSliding = false;\n    bool isDashing = false;\n    bool ceilingCheck = false;\n    [HideInInspector]\n    public bool rightSideCheck = false;\n    [HideInInspector]\n    public bool leftSideCheck = false;\n    bool wantToStandUp = false;\n    bool justJumpR = false;\n    bool justJumpL = false;\n    bool jump;\n    bool isOnTrigger = false;\n    bool isRotSliding;\n    GameObject interactableObject;\n    RaycastHit2D[] results = new RaycastHit2D[1];\n    ContactFilter2D filter;\n    ContactFilter2D jumpFilter;\n    [HideInInspector]\n    public Rigidbody2D rb2D;\n    CapsuleCollider2D collider2d;\n    Vector3 barrelFXDefaultPos;\n    Vector3 barrelFXJumpingPos;\n    Vector2 movement;\n    RaycastHit2D hit;\n    Vector3 axis;\n    CinemachineVirtualCamera currentCam;\n    CinemachineBasicMultiChannelPerlin camNoise;\n    float angle;\n\n\n    void Start()\n    {\n        currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();\n        camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();\n        filter = new ContactFilter2D()\n        {\n            useLayerMask = true,\n            layerMask = groundFilter,\n            maxDepth = 10,\n            minDepth = -10\n        };\n\n        jumpFilter = new ContactFilter2D()\n        {\n            useLayerMask = true,\n            layerMask = jumpWall,\n            maxDepth = 1,\n            minDepth = -1\n        };\n\n        barrelFXDefaultPos = barrelFXSocket.transform.localPosition;\n        barrelFXJumpingPos = new Vector3(barrelFXSocket.transform.localPosition.x, barrelFXSocket.transform.localPosition.y + 0.3f, barrelFXSocket.transform.localPosition.z);\n        rb2D = GetComponent<Rigidbody2D>();\n        collider2d = GetComponent<CapsuleCollider2D>();\n        normalSpeed = speed;\n        gravityScale = rb2D.gravityScale;\n    }\n\n    void Update()\n    {\n        bool wasGrounded = isGrounded;\n\n        isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||\n                      (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1) ||\n                      (Physics2D.Raycast(transform.position + -transform.right * 0.4f + - transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1));\n        ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;\n        rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;\n        leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;\n        \n\n        if (inputEnabled)\n            movement = new Vector2(Input.GetAxis(\"Horizontal\") * speed, rb2D.velocity.y);\n        \n        animator.SetFloat(\"speed\", Mathf.Abs(movement.x));\n\n        if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))\n            SwitchDirection();\n\n        if (inputEnabled && Input.GetButtonDown(\"Fire3\"))\n            if (animator.GetBool(\"isOnAir\") && canDash)\n                StartCoroutine(\"Dash\");\n            else if (isGrounded && canSlide)\n                StartCoroutine(\"Slide\");\n\n        if ((inputEnabled || (animator.GetBool(\"isSliding\") && !ceilingCheck || isRotSliding)) && Input.GetButtonDown(\"Jump\") && (isGrounded || animator.GetBool(\"isGrabbing\")))\n        {\n            jump = true;\n            if(isFacingRight)\n                barrelFXSocket.transform.localPosition = barrelFXJumpingPos;\n            else\n                barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);\n            animator.SetBool(\"isOnAir\", true);\n            if (isSliding)\n            {\n                StartCoroutine(StopSliding());\n            }\n        }\n\n        if(inputEnabled && Input.GetButtonDown(\"Fire1\") && !animator.GetBool(\"isGrabbing\"))\n        {\n            Instantiate(barrelFX, barrelFXSocket.transform);\n            GameObject shot = Instantiate(bullet, barrelFXSocket.transform.position, Quaternion.identity);\n            animator.SetTrigger(\"fire\");\n            StartCoroutine(FireDelay());\n            if (isFacingRight)\n                shot.GetComponent<Bullet>().isRight = true;\n        }\n\n        if (wantToStandUp && !ceilingCheck)\n        {\n            StartCoroutine(StopSliding());\n            wantToStandUp = false;\n        }\n\n        if (wasGrounded && !isGrounded && !isRotSliding)\n            animator.SetBool(\"isOnAir\", true);\n        else if (isGrounded && !wasGrounded && !isRotSliding)\n            OnLanding();\n\n        if (!isGrounded && isSliding)\n        {\n            StartCoroutine(StopSliding());\n        }\n\n        if(isDashing && animator.GetBool(\"isGrabbing\"))\n        {\n            StartCoroutine(StopDashing());\n        }\n\n        if (inputEnabled && Input.GetButtonDown(\"ChangePawn\") && ((movement.x < 0.1f && isGrounded) || animator.GetBool(\"isGrabbing\")))\n        {\n            mainScript.ChangePawn(2);\n        }\n\n        if (inputEnabled && Input.GetButtonDown(\"Interact\") && isOnTrigger)\n        {\n            StartCoroutine(interactableObject.GetComponent<ButtonAction>().OnInteract());\n        }\n\n        hit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down,0.5f);\n        axis = Vector3.Cross(-transform.up, -hit.normal);\n        if (axis != Vector3.zero && !hit.collider.CompareTag(\"Enemy\"))\n        {\n            angle = Mathf.Atan2(Vector3.Magnitude(axis), Vector3.Dot(-transform.up, -hit.normal));\n            transform.RotateAround(axis,angle);\n            inputEnabled = false;\n            animator.SetBool(\"isSliding\", true);\n            isRotSliding = true;\n            rb2D.velocity = Vector2.zero;\n            movement = Vector2.zero;\n            \n        }\n        else if((!isGrounded && !hit))\n        {\n            animator.SetBool(\"isSliding\", false);\n            isRotSliding = false;\n            inputEnabled = true;\n            animator.SetBool(\"isOnAir\", true); \n            transform.rotation = Quaternion.identity;\n        }\n        else if (isRotSliding)\n        {\n            movement = new Vector2(9, -6.7f);\n        }\n    }\n\n    void FixedUpdate()\n    {\n        if (jump && animator.GetBool(\"isGrabbing\"))\n        {\n            if (rightSideCheck)\n            {\n                RightSideDetach();\n                movement = new Vector2(-speed, jumpForce);\n            }\n            if (leftSideCheck)\n            {\n                LeftSideDetach();\n                if (Input.GetAxis(\"Horizontal\") < -0.1f)\n                    sprite.flipX = true;\n                movement = new Vector2(speed, jumpForce);\n            }\n            animator.SetBool(\"isGrabbing\", false);\n            jump = false;\n        }\n        else if (jump)\n        {\n            movement.y = jumpForce; // AddForce\n            jump = false;\n        }\n\n        if ((animator.GetBool(\"isOnAir\") || isDashing) && !animator.GetBool(\"isGrabbing\"))\n        {\n            if (rightSideCheck && !justJumpR)\n            {\n                animator.SetBool(\"isFiring\", false);\n                animator.SetBool(\"isGrabbing\", true);\n                rb2D.simulated = false;\n                sprite.flipX = true;\n            }     \n            if (leftSideCheck && !justJumpL)\n            {\n                animator.SetBool(\"isFiring\", false);\n                animator.SetBool(\"isGrabbing\", true);\n                rb2D.simulated = false;\n                sprite.flipX = false;\n            }\n            \n        }\n        if(!isDashing)\n            rb2D.velocity = movement;\n\n    }\n\n    public void LeftSideDetach()\n    {\n        rb2D.simulated = true;\n        justJumpL = true;\n        justJumpR = false;\n        StartCoroutine(JustJump(false));\n    }\n\n    public void RightSideDetach()\n    {\n        rb2D.simulated = true;\n        justJumpR = true;\n        justJumpL = false;\n        StartCoroutine(JustJump(true));\n        if (Input.GetAxis(\"Horizontal\") > 0.1f)\n            sprite.flipX = false;\n    }\n\n    void OnTriggerEnter2D(Collider2D collision)\n    {\n        isOnTrigger = true;\n        interactableObject = collision.gameObject;\n    }\n\n    void OnTriggerExit2D(Collider2D collision)\n    {\n        isOnTrigger = false;\n    }\n\n    void OnDrawGizmosSelected()\n    {\n        Gizmos.color = Color.red;\n        Gizmos.DrawLine(transform.position, transform.position + -transform.up * jumpThreshold);\n        Gizmos.DrawLine(transform.position + new Vector3(0.4f, 0, 0), transform.position + -transform.up  * jumpThreshold + new Vector3(0.4f, 0, 0));\n        Gizmos.DrawLine(transform.position + new Vector3(-0.4f, 0, 0), transform.position + -transform.up  * jumpThreshold + new Vector3(-0.4f, 0, 0));\n        //Gizmos.DrawSphere(hit.point, 0.1f);\n    }\n\n    public void OnLanding()\n    {\n        animator.SetBool(\"isOnAir\", false);\n        animator.SetBool(\"isFiring\", false);\n        if(isFacingRight)\n            barrelFXSocket.transform.localPosition = barrelFXDefaultPos;\n        else\n            barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);\n    }\n\n    public void Hit(bool b)\n    {\n        if (b)\n        {\n            if(!animator.GetBool(\"isFiring\"))\n                animator.SetTrigger(\"hit\");\n            inputEnabled = false;\n            movement = new Vector2(0, rb2D.velocity.y);\n            this.DelayedCall(0.25f, () => Hit(false));\n        }\n        else\n            inputEnabled = true;  \n    }\n\n    void SwitchDirection()\n    {\n        if (isFacingRight)\n        {\n            barrelFXSocket.transform.localScale = new Vector3(-1, 1, 1);\n            if (isGrounded)\n                barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);\n            else\n                barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);\n            leftCam.SetActive(true);\n            rightCam.SetActive(false);\n            currentCam = leftCam.GetComponent<CinemachineVirtualCamera>();\n            if(!animator.GetBool(\"isGrabbing\"))\n                sprite.flipX = true;\n        }\n        else\n        {\n            barrelFXSocket.transform.localScale = new Vector3(1, 1, 1);\n            barrelFXSocket.transform.localPosition = barrelFXDefaultPos;\n            leftCam.SetActive(false);\n            rightCam.SetActive(true);\n            currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();\n            if (!animator.GetBool(\"isGrabbing\"))\n                sprite.flipX = false;\n        }\n        camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();\n        isFacingRight = !isFacingRight;\n    }\n\n\n    IEnumerator FireDelay()\n    {\n        animator.SetBool(\"isFiring\", true);\n        camNoise.m_AmplitudeGain = cameraShakeAmplitude;\n        camNoise.m_FrequencyGain = cameraShakeFrequency;\n        inputEnabled = false;\n        movement = new Vector2(0, rb2D.velocity.y);\n        yield return new WaitForSeconds(fireCooldown);\n        camNoise.m_AmplitudeGain = 0;\n        camNoise.m_FrequencyGain = 0;\n        inputEnabled = true;\n        if(isGrounded)\n            animator.SetBool(\"isFiring\", false);\n    }\n    IEnumerator Dash()\n    {\n        inputEnabled = false;\n        canDash = false;\n        movement = Vector2.zero;\n        isDashing = true;\n        animator.SetBool(\"dash\", true);\n        animator.SetBool(\"isFiring\", false);\n        rb2D.velocity = new Vector2(0, 0);\n        rb2D.gravityScale = 0;\n        if (isFacingRight)\n            rb2D.AddForce(new Vector2(dashSpeed, 0), ForceMode2D.Impulse);\n        else\n            rb2D.AddForce(new Vector2(-dashSpeed, 0), ForceMode2D.Impulse);\n        yield return new WaitForSeconds(dashDuration);\n        StartCoroutine(\"StopDashing\");\n    }\n    IEnumerator StopDashing()\n    {\n        StopCoroutine(\"Dash\");\n        movement = Vector2.zero;\n        rb2D.gravityScale = gravityScale;\n        inputEnabled = true;\n        isDashing = false;\n        animator.SetBool(\"dash\", false);\n        yield return new WaitForSeconds(dashCooldown);\n        canDash = true;\n    }\n    //TODO check hardcoded values\n    IEnumerator Slide()\n    {\n        speed *= slideSpeedModifier;\n        canSlide = false;\n        isSliding = true;\n        inputEnabled = false;\n        animator.SetBool(\"isSliding\", true);\n        collider2d.direction = CapsuleDirection2D.Horizontal;\n        collider2d.offset = new Vector2(0, 0.55f);\n        collider2d.size = new Vector2(2.3f, 1.1f);\n        \n        if (isFacingRight)\n            movement = new Vector2(speed, rb2D.velocity.y);\n        else\n            movement = new Vector2(-speed, rb2D.velocity.y);\n        \n            \n        SlideEvent.Invoke();\n        yield return new WaitForSeconds(slideDuration);\n        if (ceilingCheck)\n            wantToStandUp = true;\n        else\n            StartCoroutine(\"StopSliding\");\n    }\n    IEnumerator StopSliding()\n    {\n        speed = normalSpeed;\n        movement = Vector2.zero; \n        StopCoroutine(\"Slide\");\n        collider2d.direction = CapsuleDirection2D.Vertical;\n        collider2d.offset = new Vector2(0, 1);\n        collider2d.size = new Vector2(1, 2);\n        animator.SetBool(\"isSliding\", false);\n        isSliding = false;\n        inputEnabled = true;\n        yield return new WaitForSeconds(slideCooldown);\n        canSlide = true;\n    }\n\n    IEnumerator JustJump(bool right)\n    {\n        yield return new WaitForSeconds(wallJumpDelay);\n        if (right)\n            justJumpR = false;\n        if (!right)\n            justJumpL = false;\n    }\n}\n",
 			"file": "Assets/_Source/Scripts/PlayerController.cs",
-			"file_size": 16269,
-			"file_write_time": 131986424173599707,
 			"settings":
 			{
-				"buffer_size": 15790,
+				"buffer_size": 15748,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
@@ -34,6 +40,23 @@
 			"settings":
 			{
 				"buffer_size": 1831,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Assets/_Source/Scripts/BaseEntity.cs",
+			"settings":
+			{
+				"buffer_size": 1470,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Assets/_Source/Scripts/SwitchCamera.cs",
+			"settings":
+			{
+				"buffer_size": 471,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -104,6 +127,7 @@
 	],
 	"file_history":
 	[
+		"/D/UnityProjects/2D Game Kit Test/Assets/2DGamekit/Scripts/Utility/AutoCameraSetup.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/MainMenu.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Extension.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/EnemyPatrol.cs",
@@ -111,7 +135,7 @@
 	],
 	"find":
 	{
-		"height": 29.0
+		"height": 70.0
 	},
 	"find_in_files":
 	{
@@ -125,6 +149,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"OnTrigger",
 			"QuitGame"
 		],
 		"highlight": false,
@@ -143,7 +168,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 4,
 			"sheets":
 			[
 				{
@@ -171,7 +196,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
@@ -180,28 +205,32 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15790,
+						"buffer_size": 15748,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								9199,
-								9199
+								1251,
+								1251
 							]
 						],
 						"settings":
 						{
+							"oops":
+							{
+								"7609,7618": "'Transform.RotateAround(Vector3, float)' is obsolete: 'warning use Transform.Rotate instead.'"
+							},
 							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 370.0,
+						"translation.y": 288.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
@@ -217,8 +246,8 @@
 						"selection":
 						[
 							[
-								836,
-								836
+								1656,
+								1666
 							]
 						],
 						"settings":
@@ -233,11 +262,74 @@
 						"translation.y": 54.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
+					"file": "Assets/_Source/Scripts/BaseEntity.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1470,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								569,
+								526
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Unity3D/UnityC#.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "Assets/_Source/Scripts/SwitchCamera.cs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 471,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								430,
+								430
+							]
+						],
+						"settings":
+						{
+							"oops":
+							{
+								"318,334": "The type or namespace name 'PlayerController' could not be found (are you missing a using directive or an assembly reference?)",
+								"377,393": "The type or namespace name 'PlayerController' could not be found (are you missing a using directive or an assembly reference?)"
+							},
+							"syntax": "Packages/Unity3D/UnityC#.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
 					"file": "Assets/_Source/Scripts/Extension.cs",
 					"semi_transient": false,
 					"settings":
@@ -263,7 +355,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
