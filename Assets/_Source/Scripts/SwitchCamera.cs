@@ -6,37 +6,56 @@
 
 using UnityEngine;
 
+
+
 public class SwitchCamera : MonoBehaviour
 {
-	public GameObject DRightVCam;
-	public GameObject DLeftVCam;
+    public enum CameraModes
+    {
+        Default,
+        Middle,
+        Down
+    }
+	GameObject DRightVCam;
+	GameObject DLeftVCam;
     GameObject defaultRCam;
     GameObject defaultLCam;
+    GameObject middleCam;
+    public CameraModes modes;
 
     void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(collision.gameObject.CompareTag("Player"))
 		{
-            
-			PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             defaultRCam = player.rightCam;
             defaultLCam = player.leftCam;
-            player.rightCam.SetActive(false);
-            player.leftCam.SetActive(false);
-            player.rightCam = DRightVCam;
-			player.leftCam = DLeftVCam;
-            if(player.isFacingRight)
+            switch(modes)
             {
-                Debug.Log("r");
-                player.rightCam.SetActive(true);
-            }
-            else
-            {
-                Debug.Log("l");
-                player.rightCam.SetActive(false);
-            }
-            player.currentCam.enabled = true;
+                case CameraModes.Down:
+                    DRightVCam = player.DRightCam;
+                    DLeftVCam = player.DLeftCam;
+                    player.rightCam = DRightVCam;
+                    player.leftCam = DLeftVCam;
+                    if(player.isFacingRight)
+                    {
+                        player.rightCam.SetActive(true);
+                    }
+                    else
+                    {
+                        player.leftCam.SetActive(true);
 
+                    }
+                    break;
+                case CameraModes.Middle:
+                    middleCam = player.middleCam;
+                    player.rightCam = middleCam;
+                    player.leftCam = middleCam;
+                    middleCam.SetActive(true);
+                    break;
+            }
+            defaultRCam.SetActive(false);
+            defaultLCam.SetActive(false);
 		}
 	}
 
@@ -45,19 +64,28 @@ public class SwitchCamera : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            player.rightCam.SetActive(false);
-            player.leftCam.SetActive(false);
             player.rightCam = defaultRCam;
             player.leftCam = defaultLCam;
+
             if (player.isFacingRight)
             {
                 player.rightCam.SetActive(true);
             }
             else
             {
-                player.rightCam.SetActive(false);
+                player.leftCam.SetActive(true);
+            }
+
+            switch(modes)
+            {
+                case CameraModes.Middle:
+                        middleCam.SetActive(false); 
+                        break;
+                case CameraModes.Down:
+                        DRightVCam.SetActive(false);
+                        DLeftVCam.SetActive(false);
+                        break;
             }
         }
     }
-
 }

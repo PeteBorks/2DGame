@@ -8,7 +8,10 @@ using UnityEngine;
 
 public class MovablePlatform : MonoBehaviour
 {
+    [SerializeField]
     bool isActive = false;
+    [SerializeField]
+    bool usePlayerContact = true;
     bool canMove = false;
     float time = 0;
     float t = 0;
@@ -22,7 +25,11 @@ public class MovablePlatform : MonoBehaviour
     void Start()
     {
         bcollider2d = GetComponent<BoxCollider2D>();
+        if(isActive)
+            Activate();
     }
+
+    [ContextMenu("Activate")]
     public void Activate()
     {
         isActive = true;
@@ -38,9 +45,10 @@ public class MovablePlatform : MonoBehaviour
             t = Mathf.PingPong(time, duration) / duration;
             transform.localPosition = Vector3.Lerp(origin, target, t);
         }
-        if ((Mathf.PingPong(time, duration) / duration > 0.999f || Mathf.PingPong(time, duration) / duration < 0.001f) && isActive)
+        if ((Mathf.PingPong(time, duration) / duration > 0.999f || Mathf.PingPong(time, duration) / duration < 0.001f) && (isActive || canMove))
         {
-            isActive = false;
+            if(usePlayerContact)
+                isActive = false;
             Invoke("Activate", pause);
         }
 
@@ -48,32 +56,38 @@ public class MovablePlatform : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
+        if(usePlayerContact)
         {
-            canMove = true;
-            collision.collider.transform.SetParent(transform);
-        }
+            if(collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
+            {
+                canMove = true;
+                collision.collider.transform.SetParent(transform);
+            }
 
-        if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y > collision.transform.position.y)
-        {
-            isActive = false;
-            for (int i = 0; i < l.Length; i++)
-                l[i].enabled = false;
-        }
+            if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y > collision.transform.position.y)
+            {
+                isActive = false;
+                for(int i = 0; i < l.Length; i++)
+                    l[i].enabled = false;
+            }
+        }  
     }
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
+        if(usePlayerContact)
         {
-            canMove = false;
-            collision.collider.transform.parent = null;
-        }
+            if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
+            {
+                canMove = false;
+                collision.collider.transform.parent = null;
+            }
 
-        if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y > collision.transform.position.y)
-        {
-            isActive = true;
-            for (int i = 0; i < l.Length; i++)
-                l[i].enabled = true;
+            if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y > collision.transform.position.y)
+            {
+                isActive = true;
+                for (int i = 0; i < l.Length; i++)
+                    l[i].enabled = true;
+            }
         }
     }
 

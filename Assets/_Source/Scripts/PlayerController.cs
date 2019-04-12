@@ -7,7 +7,6 @@
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
-using UnityEngine.Events;
 
 [SelectionBase]
 public class PlayerController : BaseEntity
@@ -42,8 +41,6 @@ public class PlayerController : BaseEntity
 
     [Header("References")]
     [SerializeField]
-    Main mainScript;
-    [SerializeField]
     public Animator animator;
     [SerializeField]
     LayerMask groundFilter;
@@ -51,6 +48,9 @@ public class PlayerController : BaseEntity
     LayerMask jumpWall;
     public GameObject rightCam;
     public GameObject leftCam;
+    public GameObject middleCam;
+    public GameObject DRightCam;
+    public GameObject DLeftCam;
     [SerializeField]
     SpriteRenderer sprite;
     [SerializeField]
@@ -62,14 +62,9 @@ public class PlayerController : BaseEntity
     [SerializeField]
     GameObject barrelFXSocket;
 
-    [Header("Events")]
-    [Space]
-    public UnityEvent SlideEvent;
-
-    
     float normalSpeed;
     float gravityScale;
-
+    [HideInInspector]
     public bool inputEnabled = true;
     bool canSlide = true;
     bool canDash = true;
@@ -101,9 +96,11 @@ public class PlayerController : BaseEntity
     Vector2 movement;
     RaycastHit2D hit;
     Vector3 axis;
+    [HideInInspector]
     public CinemachineVirtualCamera currentCam;
     CinemachineBasicMultiChannelPerlin camNoise;
     float angle;
+    bool wasGrounded;
 
 
     void Start()
@@ -136,16 +133,6 @@ public class PlayerController : BaseEntity
 
     void Update()
     {
-        bool wasGrounded = isGrounded;
-
-        isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
-                      (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1) ||
-                      (Physics2D.Raycast(transform.position + -transform.right * 0.4f + - transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1));
-        ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
-        rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
-        leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
-        
-
         if (inputEnabled)
             movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
         
@@ -207,6 +194,7 @@ public class PlayerController : BaseEntity
 
         if (inputEnabled && Input.GetButtonDown("ChangePawn") && ((movement.x < 0.1f && isGrounded) || animator.GetBool("isGrabbing")))
         {
+            Main mainScript = FindObjectOfType<Main>();
             mainScript.ChangePawn(2);
         }
 
@@ -238,12 +226,19 @@ public class PlayerController : BaseEntity
         }
         else if (isRotSliding)
         {
-            movement = new Vector2(9, -6.7f);
+            movement = new Vector2(5f, -6.7f);
         }
     }
 
     void FixedUpdate()
     {
+        wasGrounded = isGrounded;
+        isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
+                      (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1) ||
+                      (Physics2D.Raycast(transform.position + -transform.right * 0.4f + - transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1));
+        ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
+        rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
+        leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
         if (jump && animator.GetBool("isGrabbing"))
         {
             if (rightSideCheck)
@@ -361,8 +356,8 @@ public class PlayerController : BaseEntity
                 barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
             else
                 barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);
-            leftCam.SetActive(true);
             rightCam.SetActive(false);
+            leftCam.SetActive(true);
             currentCam = leftCam.GetComponent<CinemachineVirtualCamera>();
             if(!animator.GetBool("isGrabbing"))
                 sprite.flipX = true;
@@ -435,14 +430,10 @@ public class PlayerController : BaseEntity
         collider2d.direction = CapsuleDirection2D.Horizontal;
         collider2d.offset = new Vector2(0, 0.55f);
         collider2d.size = new Vector2(2.3f, 1.1f);
-        
         if (isFacingRight)
             movement = new Vector2(speed, rb2D.velocity.y);
         else
             movement = new Vector2(-speed, rb2D.velocity.y);
-        
-            
-        SlideEvent.Invoke();
         yield return new WaitForSeconds(slideDuration);
         if (ceilingCheck)
             wantToStandUp = true;
