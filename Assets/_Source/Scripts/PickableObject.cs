@@ -7,12 +7,13 @@ using UnityEngine;
 
 public class PickableObject : MonoBehaviour
 {
+    public int value = 1;
     public Light l;
     void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Stellar"))
         {
-            collision.gameObject.GetComponent<CollectableManager>().AddCollectable(1);
+            collision.gameObject.GetComponent<CollectableManager>().AddCollectable(value);
             Destroy(l.gameObject);
             Destroy(gameObject);
 

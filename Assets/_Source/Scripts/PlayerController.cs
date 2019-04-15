@@ -9,13 +9,14 @@ using Cinemachine;
 using UnityEngine;
 
 [SelectionBase]
+[RequireComponent(typeof(InputManager))]
 public class PlayerController : BaseEntity
 {
     [Header("Movement")]
     [SerializeField, Range(0, 10)]
     float speed = 1f;
-    [SerializeField, Range(0, 2)]
-    float wallJumpDelay = 1f;
+    [Range(0, 2)]
+    public float wallJumpDelay = 1f;
     [SerializeField, Range(0, 30)]
     float dashSpeed = 14;
     [SerializeField, Range(0, 1)]
@@ -61,7 +62,10 @@ public class PlayerController : BaseEntity
     GameObject barrelFX;
     [SerializeField]
     GameObject barrelFXSocket;
+    [SerializeField]
+    GameObject meleeFX;
 
+    InputManager inputManager;
     float normalSpeed;
     float gravityScale;
     [HideInInspector]
@@ -70,7 +74,8 @@ public class PlayerController : BaseEntity
     bool canDash = true;
     [HideInInspector]
     public bool isFacingRight = true;
-    bool isGrounded = true;
+    [HideInInspector]
+    public bool isGrounded = true;
     bool isSliding = false;
     bool isDashing = false;
     bool ceilingCheck = false;
@@ -93,8 +98,11 @@ public class PlayerController : BaseEntity
     CapsuleCollider2D collider2d;
     Vector3 barrelFXDefaultPos;
     Vector3 barrelFXJumpingPos;
-    Vector2 movement;
-    RaycastHit2D hit;
+    GameObject target;
+    
+    public Vector2 movement;
+    RaycastHit2D groundHit;
+    RaycastHit2D meleeCheck;
     Vector3 axis;
     [HideInInspector]
     public CinemachineVirtualCamera currentCam;
@@ -105,6 +113,7 @@ public class PlayerController : BaseEntity
 
     void Start()
     {
+        inputManager = GetComponent<InputManager>();
         currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();
         camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         filter = new ContactFilter2D()
@@ -133,42 +142,88 @@ public class PlayerController : BaseEntity
 
     void Update()
     {
-        if (inputEnabled)
-            movement = new Vector2(Input.GetAxis("Horizontal") * speed, rb2D.velocity.y);
-        
-        animator.SetFloat("speed", Mathf.Abs(movement.x));
+        wasGrounded = isGrounded;
+        isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
+                      (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold) == 1) ||
+                      (Physics2D.Raycast(transform.position + -transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold) == 1));
+        ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
+        rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
+        leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
+        meleeCheck = Physics2D.Raycast(transform.position + Vector3.up + Vector3.left * 1.25f, transform.right, 2.5f, LayerMask.GetMask("Enemy"));
 
-        if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
-            SwitchDirection();
+        if (meleeCheck)
+        {
+            target = meleeCheck.collider.gameObject;
+            target.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        else if(target)
+            target.transform.GetChild(0).gameObject.SetActive(false);
 
-        if (inputEnabled && Input.GetButtonDown("Fire3"))
+        if (inputEnabled && inputManager.dash)
             if (animator.GetBool("isOnAir") && canDash)
                 StartCoroutine("Dash");
             else if (isGrounded && canSlide)
                 StartCoroutine("Slide");
 
-        if ((inputEnabled || (animator.GetBool("isSliding") && !ceilingCheck || isRotSliding)) && Input.GetButtonDown("Jump") && (isGrounded || animator.GetBool("isGrabbing")))
+        if ((inputEnabled || (animator.GetBool("isSliding") && !ceilingCheck || isRotSliding)) && inputManager.jump && (isGrounded || animator.GetBool("isGrabbing")))
         {
             jump = true;
-            if(isFacingRight)
+            inputEnabled = true;
+            if (isFacingRight)
                 barrelFXSocket.transform.localPosition = barrelFXJumpingPos;
             else
                 barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);
-            animator.SetBool("isOnAir", true);
-            if (isSliding)
-            {
-                StartCoroutine(StopSliding());
-            }
+            
         }
 
-        if(inputEnabled && Input.GetButtonDown("Fire1") && !animator.GetBool("isGrabbing"))
+        groundHit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down, 0.5f);
+        axis = Vector3.Cross(-transform.up, -groundHit.normal);
+
+        if (axis != Vector3.zero && !groundHit.collider.CompareTag("Enemy"))
         {
-            Instantiate(barrelFX, barrelFXSocket.transform);
-            GameObject shot = Instantiate(bullet, barrelFXSocket.transform.position, Quaternion.identity);
-            animator.SetTrigger("fire");
-            StartCoroutine(FireDelay());
-            if (isFacingRight)
-                shot.GetComponent<Bullet>().isRight = true;
+            angle = Mathf.Atan2(Vector3.Magnitude(axis), Vector3.Dot(-transform.up, -groundHit.normal));
+            transform.RotateAround(axis, angle);
+            inputEnabled = false;
+            animator.SetBool("isSliding", true);
+            isRotSliding = true;
+            rb2D.velocity = Vector2.zero;
+            movement = Vector2.zero;
+
+        }
+        else if ((!isGrounded && !groundHit) && health!=0)
+        {
+            animator.SetBool("isSliding", false);
+            isRotSliding = false;
+            inputEnabled = true;
+            animator.SetBool("isOnAir", true);
+            transform.rotation = Quaternion.identity;
+        }
+        else if (isRotSliding)
+        {
+            movement = new Vector2(5.5f, -6.7f);
+        }
+
+        if (inputEnabled && inputManager.fire && !animator.GetBool("isGrabbing"))
+        {
+            if(meleeCheck && !animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Melee") && isGrounded)
+            {
+                target.GetComponent<EnemyPatrol>().MeleeDeath();
+                Instantiate(meleeFX, barrelFXSocket.transform);
+                movement = Vector2.zero;
+                animator.SetTrigger("melee");
+                inputEnabled = false;
+                StartCoroutine(WaitMelee());
+            }
+            else if(!animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Melee"))
+            {
+                Instantiate(barrelFX, barrelFXSocket.transform);
+                GameObject shot = Instantiate(bullet, barrelFXSocket.transform.position, Quaternion.identity);
+                animator.SetTrigger("fire");
+                StartCoroutine(FireDelay());
+                if (isFacingRight)
+                    shot.GetComponent<Bullet>().isRight = true;
+            }
+            
         }
 
         if (wantToStandUp && !ceilingCheck)
@@ -192,113 +247,103 @@ public class PlayerController : BaseEntity
             StartCoroutine(StopDashing());
         }
 
-        if (inputEnabled && Input.GetButtonDown("ChangePawn") && ((movement.x < 0.1f && isGrounded) || animator.GetBool("isGrabbing")))
+        if (inputEnabled && inputManager.changePawn && ((movement.x < 0.1f && movement.x > -0.1f && isGrounded) || animator.GetBool("isGrabbing")))
         {
             Main mainScript = FindObjectOfType<Main>();
             mainScript.ChangePawn(2);
         }
 
-        if (inputEnabled && Input.GetButtonDown("Interact") && isOnTrigger)
+        if (inputEnabled && inputManager.interact && isOnTrigger)
         {
             StartCoroutine(interactableObject.GetComponent<ButtonAction>().OnInteract());
         }
 
-        hit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down,0.5f);
-        axis = Vector3.Cross(-transform.up, -hit.normal);
-        if (axis != Vector3.zero && !hit.collider.CompareTag("Enemy"))
-        {
-            angle = Mathf.Atan2(Vector3.Magnitude(axis), Vector3.Dot(-transform.up, -hit.normal));
-            transform.RotateAround(axis,angle);
-            inputEnabled = false;
-            animator.SetBool("isSliding", true);
-            isRotSliding = true;
-            rb2D.velocity = Vector2.zero;
-            movement = Vector2.zero;
-            
-        }
-        else if((!isGrounded && !hit))
-        {
-            animator.SetBool("isSliding", false);
-            isRotSliding = false;
-            inputEnabled = true;
-            animator.SetBool("isOnAir", true); 
-            transform.rotation = Quaternion.identity;
-        }
-        else if (isRotSliding)
-        {
-            movement = new Vector2(5f, -6.7f);
-        }
+        
+        
     }
 
     void FixedUpdate()
     {
-        wasGrounded = isGrounded;
-        isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
-                      (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1) ||
-                      (Physics2D.Raycast(transform.position + -transform.right * 0.4f + - transform.up * 0.1f, -transform.up, filter, results,  jumpThreshold) == 1));
-        ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
-        rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
-        leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
+        if (inputEnabled)
+            movement = new Vector2(inputManager.horizontalAxis * speed, rb2D.velocity.y);
+        if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
+            SwitchDirection();
+
+        animator.SetFloat("speed", Mathf.Abs(movement.x));
+        
         if (jump && animator.GetBool("isGrabbing"))
         {
-            if (rightSideCheck)
-            {
-                RightSideDetach();
-                movement = new Vector2(-speed, jumpForce);
-            }
-            if (leftSideCheck)
-            {
-                LeftSideDetach();
-                if (Input.GetAxis("Horizontal") < -0.1f)
-                    sprite.flipX = true;
-                movement = new Vector2(speed, jumpForce);
-            }
-            animator.SetBool("isGrabbing", false);
-            jump = false;
+            Detach(true);
         }
         else if (jump)
         {
+            animator.SetBool("isOnAir", true);
+            if (isSliding)
+            {
+                StartCoroutine(StopSliding());
+            }
             movement.y = jumpForce; // AddForce
             jump = false;
         }
 
+        
         if ((animator.GetBool("isOnAir") || isDashing) && !animator.GetBool("isGrabbing"))
         {
             if (rightSideCheck && !justJumpR)
             {
                 animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
-                rb2D.simulated = false;
+                rb2D.bodyType = RigidbodyType2D.Static;
                 sprite.flipX = true;
             }     
             if (leftSideCheck && !justJumpL)
             {
                 animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
-                rb2D.simulated = false;
+                rb2D.bodyType = RigidbodyType2D.Static;
                 sprite.flipX = false;
             }
             
         }
-        if(!isDashing)
+        if(!isDashing && rb2D.bodyType == RigidbodyType2D.Dynamic)
             rb2D.velocity = movement;
 
     }
 
+    public void Detach(bool useJump)
+    {
+        if (rightSideCheck)
+        {
+            RightSideDetach();
+            if(useJump)
+                movement = new Vector2(-speed, jumpForce);
+        }
+        if (leftSideCheck)
+        {
+            LeftSideDetach();
+            if (movement.x < -0.1f)
+                sprite.flipX = true;
+            if(useJump)
+                movement = new Vector2(speed, jumpForce);
+        }
+        animator.SetBool("isGrabbing", false);
+        jump = false;
+    }
+
     public void LeftSideDetach()
     {
-        rb2D.simulated = true;
+        rb2D.bodyType = RigidbodyType2D.Dynamic;
         justJumpL = true;
         justJumpR = false;
-        StartCoroutine(JustJump(false));
+        StartCoroutine(JustJumped(false));
     }
 
     public void RightSideDetach()
     {
-        rb2D.simulated = true;
+        rb2D.bodyType = RigidbodyType2D.Dynamic;
         justJumpR = true;
         justJumpL = false;
-        StartCoroutine(JustJump(true));
+        StartCoroutine(JustJumped(true));
         if (Input.GetAxis("Horizontal") > 0.1f)
             sprite.flipX = false;
     }
@@ -320,6 +365,7 @@ public class PlayerController : BaseEntity
         Gizmos.DrawLine(transform.position, transform.position + -transform.up * jumpThreshold);
         Gizmos.DrawLine(transform.position + new Vector3(0.4f, 0, 0), transform.position + -transform.up  * jumpThreshold + new Vector3(0.4f, 0, 0));
         Gizmos.DrawLine(transform.position + new Vector3(-0.4f, 0, 0), transform.position + -transform.up  * jumpThreshold + new Vector3(-0.4f, 0, 0));
+        Gizmos.DrawLine(transform.position + Vector3.up + Vector3.left * 1.25f, transform.position + Vector3.up +transform.right * 1.25f);
         //Gizmos.DrawSphere(hit.point, 0.1f);
     }
 
@@ -333,18 +379,10 @@ public class PlayerController : BaseEntity
             barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
     }
 
-    public void Hit(bool b)
+    public void Hit()
     {
-        if (b)
-        {
-            if(!animator.GetBool("isFiring"))
+            if(movement.x == 0)
                 animator.SetTrigger("hit");
-            inputEnabled = false;
-            movement = new Vector2(0, rb2D.velocity.y);
-            this.DelayedCall(0.25f, () => Hit(false));
-        }
-        else
-            inputEnabled = true;  
     }
 
     void SwitchDirection()
@@ -356,9 +394,13 @@ public class PlayerController : BaseEntity
                 barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
             else
                 barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);
-            rightCam.SetActive(false);
-            leftCam.SetActive(true);
-            currentCam = leftCam.GetComponent<CinemachineVirtualCamera>();
+            if(!middleCam.activeSelf)
+            {
+                rightCam.SetActive(false);
+                leftCam.SetActive(true);
+                currentCam = leftCam.GetComponent<CinemachineVirtualCamera>();
+            }
+            
             if(!animator.GetBool("isGrabbing"))
                 sprite.flipX = true;
         }
@@ -366,9 +408,13 @@ public class PlayerController : BaseEntity
         {
             barrelFXSocket.transform.localScale = new Vector3(1, 1, 1);
             barrelFXSocket.transform.localPosition = barrelFXDefaultPos;
-            leftCam.SetActive(false);
-            rightCam.SetActive(true);
-            currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();
+            if(!middleCam.activeSelf)
+            {
+                leftCam.SetActive(false);
+                rightCam.SetActive(true);
+                currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();
+            }
+            
             if (!animator.GetBool("isGrabbing"))
                 sprite.flipX = false;
         }
@@ -376,7 +422,11 @@ public class PlayerController : BaseEntity
         isFacingRight = !isFacingRight;
     }
 
-
+    IEnumerator WaitMelee()
+    {
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 0.5f);
+        inputEnabled = true;
+    }
     IEnumerator FireDelay()
     {
         animator.SetBool("isFiring", true);
@@ -429,7 +479,7 @@ public class PlayerController : BaseEntity
         animator.SetBool("isSliding", true);
         collider2d.direction = CapsuleDirection2D.Horizontal;
         collider2d.offset = new Vector2(0, 0.55f);
-        collider2d.size = new Vector2(2.3f, 1.1f);
+        collider2d.size = new Vector2(1f, 1.1f);
         if (isFacingRight)
             movement = new Vector2(speed, rb2D.velocity.y);
         else
@@ -454,8 +504,7 @@ public class PlayerController : BaseEntity
         yield return new WaitForSeconds(slideCooldown);
         canSlide = true;
     }
-
-    IEnumerator JustJump(bool right)
+    IEnumerator JustJumped(bool right)
     {
         yield return new WaitForSeconds(wallJumpDelay);
         if (right)

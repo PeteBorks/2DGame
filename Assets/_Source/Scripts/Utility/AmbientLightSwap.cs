@@ -9,19 +9,34 @@ using UnityEngine;
 
 public class AmbientLightSwap : MonoBehaviour
 {
-	public Color newColor;
+	Color newColor;
 	Color defaultColor;
+	Color dColor;
+	public Color targetColor;
 	public float transitionDuration;
 	public AnimationCurve transitionCurve;
 
 	void Start()
 	{
 		defaultColor = RenderSettings.ambientLight;
+		dColor = defaultColor;
 	}
 
-	void OnTriggerEnter2D()
+	void OnTriggerEnter2D(Collider2D collision)
 	{
-		StartCoroutine(Transition());
+		if(targetColor == RenderSettings.ambientLight)
+		{
+			newColor = defaultColor;
+			defaultColor = targetColor;
+		}
+		else
+		{
+			defaultColor = dColor;
+			newColor = targetColor;
+		}
+
+		if(collision.gameObject.GetComponent<PlayerController>())
+			StartCoroutine(Transition());
 	}
 
 	IEnumerator Transition()

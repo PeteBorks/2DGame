@@ -131,6 +131,15 @@ public class EnemyPatrol : BaseEntity
         }
     }
 
+    public void MeleeDeath()
+    {
+        health = 0;
+        animator.SetTrigger("dieMelee");       
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        gameObject.GetComponent<Rigidbody2D>().simulated = false;
+        this.DelayedCall(4, () => DestroyThis());
+    }
+
     void FlipSide()
     {
         transform.localScale = new Vector3(-transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
@@ -139,7 +148,6 @@ public class EnemyPatrol : BaseEntity
 
     void OnValidate()
     {
- 
         if(flipSide)
         {
             FlipSide();

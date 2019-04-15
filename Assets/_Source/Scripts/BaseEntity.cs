@@ -4,6 +4,7 @@
  * Created on: 30/03/19 (dd/mm/yy)
  */
 
+using System.Collections;
 using UnityEngine;
 
 public class BaseEntity : MonoBehaviour
@@ -18,42 +19,52 @@ public class BaseEntity : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if(health > damage)
+        PlayerController player = gameObject.GetComponent<PlayerController>();
+        EnemyPatrol enemy = gameObject.GetComponent<EnemyPatrol>();
+        if (health > damage)
         {
             health -= damage;
-            if (gameObject.GetComponent<EnemyPatrol>())
-                gameObject.GetComponent<EnemyPatrol>().DamageFeedback(true);
-            if (gameObject.GetComponent<PlayerController>())
-                gameObject.GetComponent<PlayerController>().Hit(true);
+            if (enemy)
+                enemy.DamageFeedback(true);
+            if (player)
+                player.Hit();
         }
         else
         {
             health = 0;
-            if (gameObject.GetComponent<EnemyPatrol>())
+            if (enemy)
             {
-                gameObject.GetComponent<EnemyPatrol>().animator.SetBool("isDead", true);
+                enemy.animator.SetBool("isDead", true);
                 this.DelayedCall(2, () => DestroyThis());
+                gameObject.GetComponent<Collider2D>().enabled = false;
+                gameObject.GetComponent<Rigidbody2D>().simulated = false;
             }
-            if (gameObject.GetComponent<PlayerController>())
+            if (player)
             {
-                gameObject.GetComponent<PlayerController>().animator.SetBool("isDead", true);
-                gameObject.GetComponent<PlayerController>().inputEnabled = false;
-            } 
-            gameObject.GetComponent<Collider2D>().enabled = false;
-            gameObject.GetComponent<Rigidbody2D>().simulated = false;
-            
+                player.inputEnabled = false;
+                player.rb2D.velocity = Vector2.zero;
+                if(player.animator.GetBool("isGrabbing"))
+                {
+                    player.wallJumpDelay = 50;
+                    player.Detach(false);
+                    player.rb2D.velocity = new Vector2(0, -10);
+                }
+                StartCoroutine(WaitForLanding(player));
+            }
         }
-        
     }
 
-    void DestroyThis()
+    public void DestroyThis()
     {
         Destroy(gameObject);
     }
 
-    void Update()
+    IEnumerator WaitForLanding(PlayerController p)
     {
-
-
+        yield return new WaitUntil(() => p.isGrounded);
+        p.animator.SetBool("isDead", true);
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        gameObject.GetComponent<Rigidbody2D>().simulated = false;
     }
+
 }

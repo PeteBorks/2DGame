@@ -65,7 +65,7 @@ TextureImporter:
     textureFormat: -1
     textureCompression: 2
     compressionQuality: 50
-    crunchedCompression: 0
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
@@ -76,7 +76,7 @@ TextureImporter:
     textureFormat: -1
     textureCompression: 2
     compressionQuality: 50
-    crunchedCompression: 0
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
@@ -86,7 +86,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: fed8fe4cbafede844b8e031f1fe087e1
+    spriteID: 334b8696ca105d64d93275a3ed9634cf
     vertices: []
     indices: 
     edges: []

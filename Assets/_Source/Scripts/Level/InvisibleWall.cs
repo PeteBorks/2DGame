@@ -17,11 +17,9 @@ public class InvisibleWall : MonoBehaviour
 	}
 	
 	void OnTriggerEnter2D()
-	{	
+	{
 		Color color = materialInstance.color;
-		while(color.a > 150f)
-		{
-			color.a -= 10f * Time.deltaTime;
-		}
+        color.a = .5f;
+        materialInstance.color = color;
 	}
 }

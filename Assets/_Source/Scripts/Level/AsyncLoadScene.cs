@@ -16,7 +16,8 @@ public class AsyncLoadScene : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D collision)
 	{
-		StartCoroutine(LoadScene());
+		if(!SceneManager.GetSceneByBuildIndex(sceneIndexToLoad).isLoaded)
+			StartCoroutine(LoadScene());
 	}
 
 	IEnumerator LoadScene()

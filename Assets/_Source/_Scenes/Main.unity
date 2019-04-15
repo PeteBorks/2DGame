@@ -283,7 +283,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 30fe58b72dd6f83428d9d3c4319d7789, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1285,7 +1285,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1138727183}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -53.75669, y: 19.93274, z: -71.289795}
+  m_LocalPosition: {x: -54.38439, y: 19.789742, z: -71.289795}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1081396801}
@@ -1696,7 +1696,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588376951}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -62.839207, y: 14.977731, z: -12}
+  m_LocalPosition: {x: -63.466908, y: 14.834731, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1965,15 +1965,15 @@ MonoBehaviour:
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
-  m_ScreenX: 0.5
-  m_ScreenY: 0.4
+  m_ScreenX: 0.42
+  m_ScreenY: 0.553
   m_CameraDistance: 12
   m_DeadZoneWidth: 0.018
-  m_DeadZoneHeight: 0.6
+  m_DeadZoneHeight: 0.156
   m_DeadZoneDepth: 1
   m_UnlimitedSoftZone: 0
-  m_SoftZoneWidth: 0.669
-  m_SoftZoneHeight: 0.851
+  m_SoftZoneWidth: 0.552
+  m_SoftZoneHeight: 0.691
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 1
@@ -2128,6 +2128,7 @@ GameObject:
   - component: {fileID: 1974042944}
   - component: {fileID: 1974042947}
   - component: {fileID: 1974042946}
+  - component: {fileID: 1974042948}
   - component: {fileID: 1974042945}
   - component: {fileID: 1974042950}
   m_Layer: 10
@@ -2145,7 +2146,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1974042943}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -57.9, y: 17.1, z: -59.289795}
+  m_LocalPosition: {x: -58.53, y: 16.957, z: -59.289795}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 227640819}
@@ -2198,11 +2199,14 @@ MonoBehaviour:
   barrelFX: {fileID: 6255168917785969384, guid: 2e2d9b1f428c6b34494e6799c397d46e,
     type: 3}
   barrelFXSocket: {fileID: 2114280296}
+  meleeFX: {fileID: 6338479208495876332, guid: cea70195115a0b64facfffa73eca1286, type: 3}
   inputEnabled: 1
   isFacingRight: 1
+  isGrounded: 1
   rightSideCheck: 0
   leftSideCheck: 0
   rb2D: {fileID: 0}
+  movement: {x: 0, y: 0}
   currentCam: {fileID: 0}
 --- !u!70 &1974042946
 CapsuleCollider2D:
@@ -2241,6 +2245,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &1974042948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1974042943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d4a1ae0ff2ae1548ab1088e28071690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalAxis: 0
+  dash: 0
+  jump: 0
+  fire: 0
+  changePawn: 0
+  interact: 0
 --- !u!114 &1974042950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2280,7 +2302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2005027430}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 121.52, y: 18.445377, z: -71.289795}
+  m_LocalPosition: {x: 170.5201, y: 12.57604, z: -71.289795}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1830020142}
@@ -2325,7 +2347,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 1974042944}
   m_Lens:
-    FieldOfView: 51.8
+    FieldOfView: 75
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
