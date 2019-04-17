@@ -64,7 +64,7 @@
 			"file": "Assets/_Source/Scripts/Utility/InputManager.cs",
 			"settings":
 			{
-				"buffer_size": 653,
+				"buffer_size": 668,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -73,9 +73,9 @@
 			"file": "Assets/_Source/Scripts/PlayerController.cs",
 			"settings":
 			{
-				"buffer_size": 15862,
+				"buffer_size": 17499,
 				"encoding": "UTF-8",
-				"line_ending": "Unix"
+				"line_ending": "Windows"
 			}
 		},
 		{
@@ -88,19 +88,10 @@
 			}
 		},
 		{
-			"file": "Assets/_Source/Scripts/Level/DamageableRay.cs",
-			"settings":
-			{
-				"buffer_size": 352,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
 			"file": "Assets/_Source/Scripts/Utility/ZoomOut.cs",
 			"settings":
 			{
-				"buffer_size": 737,
+				"buffer_size": 1144,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -185,13 +176,14 @@
 	],
 	"file_history":
 	[
+		"/G/UnrealProjects/ProteusTemplate-Version_5_0/Plugins/ProteusAvatars/Intermediate/Build/Win64/UE4Editor/Development/ProteusAvatars/UE4Editor-ProteusAvatars.lib.response",
+		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Level/DamageableRay.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Utility/ZoomOut.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Level/AsyncLoadScene.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/SwitchCamera.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/MeepController.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Main.cs",
 		"/D/UnityProjects/2DGame/Assets/2DGamekit/Scripts/Effect/WaterArea.cs",
-		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Level/DamageableRay.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/MovablePlatform.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Level/InvisibleWall.cs",
 		"/D/UnityProjects/2DGame/Assets/_Source/Scripts/Bullet.cs",
@@ -249,7 +241,7 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 4,
 			"sheets":
 			[
 				{
@@ -281,7 +273,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
@@ -290,15 +282,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 653,
+						"buffer_size": 668,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								297,
-								297
+								0,
+								0
 							]
 						],
 						"settings":
@@ -313,7 +305,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
@@ -322,15 +314,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15862,
+						"buffer_size": 17499,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								140,
-								122
+								0,
+								0
 							]
 						],
 						"settings":
@@ -350,7 +342,7 @@
 						"translation.y": 46.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -383,57 +375,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "Assets/_Source/Scripts/Level/DamageableRay.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 352,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								225,
-								182
-							]
-						],
-						"settings":
-						{
-							"oops":
-							{
-								"165,171": "Invalid token ';' in class, struct, or interface member declaration",
-								"281,287": "The name 'damage' does not exist in the current context"
-							},
-							"syntax": "Packages/Unity3D/UnityC#.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 4,
 					"file": "Assets/_Source/Scripts/Utility/ZoomOut.cs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 737,
+						"buffer_size": 1144,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								732,
-								732
+								0,
+								0
 							]
 						],
 						"settings":
@@ -462,7 +421,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 5,
 					"file": "Assets/_Source/Scripts/Utility/AmbientLightSwap.cs",
 					"semi_transient": false,
 					"settings":
@@ -490,11 +449,11 @@
 						"translation.y": 54.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 6,
 					"file": "Assets/_Source/Scripts/Utility/TriggerActivate.cs",
 					"semi_transient": false,
 					"settings":
@@ -522,7 +481,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
