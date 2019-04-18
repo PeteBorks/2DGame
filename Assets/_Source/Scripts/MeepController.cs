@@ -4,16 +4,21 @@ using UnityEngine;
 
 public class MeepController : MonoBehaviour
 {
+    enum CurrentPawn
+    {
+        Carrie,
+        Stellar
+    }
+
     [Header("Movement")]
     [SerializeField, Range(0, 10)]
     float speed = 5f;
     [Header("References")]
-    [SerializeField]
     public GameObject mainCam;
-    [SerializeField]
-    Main mainScript;
+    public Main mainScript;
     [SerializeField]
     SpriteRenderer sprite;
+    [HideInInspector]
     public Collider2D collider2D5;
     [HideInInspector]
     public bool inputEnabled = false;
@@ -21,11 +26,13 @@ public class MeepController : MonoBehaviour
     public Rigidbody2D rb2D;
     Vector2 movement;
     LookAt autoLook;
+    CurrentPawn currentPawn;
 
 
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
+        collider2D5 = GetComponent<CircleCollider2D>();
         autoLook = GetComponent<LookAt>();
     }
 

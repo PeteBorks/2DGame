@@ -10,6 +10,7 @@ using UnityEngine;
 public class DamageableLaser : MonoBehaviour
 {
     public bool alwaysOn = true;
+    public bool runIdleAnim = true;
     public float laserStartInterval;
     public float laserInterval;
     public float laserSecondInterval;
@@ -19,12 +20,16 @@ public class DamageableLaser : MonoBehaviour
     {
         if (!alwaysOn)
             RoutineHelper.StartRoutine(OnOff());
+        if (runIdleAnim)
+            GetComponent<Animator>().SetTrigger("idle");
     }
 
     void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(collision.GetComponent<PlayerController>())
 			collision.GetComponent<PlayerController>().TakeDamage(damage);
+        if (collision.GetComponent<MeepController>())
+            collision.GetComponent<MeepController>().mainScript.ChangePawn(1);
 	}
 
     IEnumerator OnOff()

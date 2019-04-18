@@ -9,11 +9,15 @@ using System.Collections;
 
 public class Main : MonoBehaviour
 {
+    public enum CurrentPawn
+    {
+        Carrie,
+        Stellar
+    }
 
     public PlayerController playerPawn;
     public MeepController stellar;
-
-    GameObject currentPawn;
+    public CurrentPawn currentPawn;
 
     private void Awake()
     {
@@ -41,17 +45,20 @@ public class Main : MonoBehaviour
         switch(pawnN)
         {
             case 1:
-                StartCoroutine("EnablePlayerPawn");
+                if(currentPawn != CurrentPawn.Carrie)
+                StartCoroutine(EnablePlayerPawn());
                 break;
 
             case 2: 
-                StartCoroutine("EnableStellar");
+                if(currentPawn != CurrentPawn.Stellar)
+                StartCoroutine(EnableStellar());
                 break;
         }
     }
 
     IEnumerator EnableStellar()
     {
+        currentPawn = CurrentPawn.Stellar;
         playerPawn.rb2D.simulated = false;
         playerPawn.rightCam.SetActive(false);
         playerPawn.leftCam.SetActive(false);
@@ -65,6 +72,7 @@ public class Main : MonoBehaviour
 
     IEnumerator EnablePlayerPawn()
     {
+        currentPawn = CurrentPawn.Carrie;
         //stellar.rb2D.simulated = false;
         stellar.mainCam.SetActive(false);
         stellar.inputEnabled = false;

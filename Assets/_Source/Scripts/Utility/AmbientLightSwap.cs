@@ -12,6 +12,8 @@ public class AmbientLightSwap : MonoBehaviour
 	Color newColor;
 	Color defaultColor;
 	Color dColor;
+    public bool useCurrentColor = true;
+    public Color startingColor;
 	public Color targetColor;
 	public float transitionDuration;
 	public AnimationCurve transitionCurve;
@@ -24,7 +26,18 @@ public class AmbientLightSwap : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D collision)
 	{
-		if(targetColor == RenderSettings.ambientLight)
+        if(useCurrentColor)
+        {
+            defaultColor = RenderSettings.ambientLight;
+            newColor = targetColor;
+        }
+        else
+        {
+            defaultColor = startingColor;
+            newColor = targetColor;
+        }
+        dColor = defaultColor;
+		/*if(targetColor == RenderSettings.ambientLight)
 		{
 			newColor = defaultColor;
 			defaultColor = targetColor;
@@ -33,7 +46,7 @@ public class AmbientLightSwap : MonoBehaviour
 		{
 			defaultColor = dColor;
 			newColor = targetColor;
-		}
+		}*/
 
 		if(collision.gameObject.GetComponent<PlayerController>())
 			StartCoroutine(Transition());
@@ -48,5 +61,7 @@ public class AmbientLightSwap : MonoBehaviour
 			RenderSettings.ambientLight = Color.Lerp(defaultColor, newColor, transitionCurve.Evaluate(time / transitionDuration));
 			yield return null;
 		}
+        newColor = dColor;
+        defaultColor = targetColor;
 	}
 }

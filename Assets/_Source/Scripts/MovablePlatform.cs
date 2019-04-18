@@ -21,6 +21,7 @@ public class MovablePlatform : MonoBehaviour
     public Vector3 origin;
     public Vector3 target;
     public Light [] l;
+    Transform prevtrans;
 
     void Start()
     {
@@ -60,6 +61,7 @@ public class MovablePlatform : MonoBehaviour
         {
             if(collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
             {
+                prevtrans = collision.collider.transform.parent;
                 canMove = true;
                 collision.collider.transform.SetParent(transform);
             }
@@ -79,7 +81,7 @@ public class MovablePlatform : MonoBehaviour
             if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
             {
                 canMove = false;
-                collision.collider.transform.parent = null;
+                collision.collider.transform.parent = prevtrans;
             }
 
             if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y > collision.transform.position.y)

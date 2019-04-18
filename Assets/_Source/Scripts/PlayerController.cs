@@ -110,7 +110,6 @@ public class PlayerController : BaseEntity
     float angle;
     bool wasGrounded;
 
-
     void Start()
     {
         inputManager = GetComponent<InputManager>();
