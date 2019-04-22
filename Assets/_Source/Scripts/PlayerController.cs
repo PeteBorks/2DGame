@@ -423,7 +423,7 @@ public class PlayerController : BaseEntity
 
     IEnumerator WaitMelee()
     {
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 0.5f);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 0.2f);
         inputEnabled = true;
     }
     IEnumerator FireDelay()

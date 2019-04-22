@@ -26,8 +26,6 @@ public class MovablePlatform : MonoBehaviour
     void Start()
     {
         bcollider2d = GetComponent<BoxCollider2D>();
-        if(isActive)
-            Activate();
     }
 
     [ContextMenu("Activate")]
@@ -37,6 +35,13 @@ public class MovablePlatform : MonoBehaviour
         for(int i = 0; i < l.Length; i++)
                 l[i].enabled = true;
     }
+    public void Deactivate()
+    {
+        isActive = false;
+        for (int i = 0; i < l.Length; i++)
+            l[i].enabled = false;
+    }
+
 
     void FixedUpdate()
     {
@@ -59,36 +64,24 @@ public class MovablePlatform : MonoBehaviour
     {
         if(usePlayerContact)
         {
-            if(collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
+            if(collision.gameObject.GetComponent<PlayerController>())
             {
+                Activate();
                 prevtrans = collision.collider.transform.parent;
                 canMove = true;
                 collision.collider.transform.SetParent(transform);
-            }
-
-            if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y > collision.transform.position.y)
-            {
-                isActive = false;
-                for(int i = 0; i < l.Length; i++)
-                    l[i].enabled = false;
             }
         }  
     }
     void OnCollisionExit2D(Collision2D collision)
     {
-        if(usePlayerContact)
+        if (usePlayerContact)
         {
-            if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y < collision.transform.position.y)
+            if (collision.gameObject.GetComponent<PlayerController>())
             {
+                Deactivate();
                 canMove = false;
-                collision.collider.transform.parent = prevtrans;
-            }
-
-            if (collision.gameObject.GetComponent<PlayerController>() && transform.position.y > collision.transform.position.y)
-            {
-                isActive = true;
-                for (int i = 0; i < l.Length; i++)
-                    l[i].enabled = true;
+                collision.collider.transform.SetParent(prevtrans);
             }
         }
     }

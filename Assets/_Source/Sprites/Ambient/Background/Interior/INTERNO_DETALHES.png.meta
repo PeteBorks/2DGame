@@ -1,0 +1,1713 @@
+fileFormatVersion: 2
+guid: a4caf008f6a545342b21a93827092ffc
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: INTERNO_DETALHES_0
+    21300002: INTERNO_DETALHES_1
+    21300004: INTERNO_DETALHES_2
+    21300006: INTERNO_DETALHES_3
+    21300008: INTERNO_DETALHES_4
+    21300010: INTERNO_DETALHES_5
+    21300012: INTERNO_DETALHES_6
+    21300014: INTERNO_DETALHES_7
+    21300016: INTERNO_DETALHES_8
+    21300018: INTERNO_DETALHES_9
+    21300020: INTERNO_DETALHES_10
+    21300022: INTERNO_DETALHES_11
+    21300024: INTERNO_DETALHES_12
+    21300026: INTERNO_DETALHES_13
+    21300028: INTERNO_DETALHES_14
+    21300030: INTERNO_DETALHES_15
+    21300032: INTERNO_DETALHES_16
+    21300034: INTERNO_DETALHES_17
+    21300036: INTERNO_DETALHES_18
+    21300038: INTERNO_DETALHES_19
+    21300040: INTERNO_DETALHES_20
+    21300042: INTERNO_DETALHES_21
+    21300044: INTERNO_DETALHES_22
+    21300046: INTERNO_DETALHES_23
+    21300048: INTERNO_DETALHES_24
+    21300050: INTERNO_DETALHES_25
+    21300052: INTERNO_DETALHES_26
+    21300054: INTERNO_DETALHES_27
+    21300056: INTERNO_DETALHES_28
+    21300058: INTERNO_DETALHES_29
+    21300060: INTERNO_DETALHES_30
+    21300062: INTERNO_DETALHES_31
+    21300064: INTERNO_DETALHES_32
+    21300066: INTERNO_DETALHES_33
+    21300068: INTERNO_DETALHES_34
+    21300070: INTERNO_DETALHES_35
+    21300072: INTERNO_DETALHES_36
+    21300074: INTERNO_DETALHES_37
+    21300076: INTERNO_DETALHES_38
+    21300078: INTERNO_DETALHES_39
+    21300080: INTERNO_DETALHES_40
+    21300082: INTERNO_DETALHES_41
+    21300084: INTERNO_DETALHES_42
+    21300086: INTERNO_DETALHES_43
+    21300088: INTERNO_DETALHES_44
+    21300090: INTERNO_DETALHES_45
+    21300092: INTERNO_DETALHES_46
+    21300094: INTERNO_DETALHES_47
+    21300096: INTERNO_DETALHES_48
+    21300098: INTERNO_DETALHES_49
+    21300100: INTERNO_DETALHES_50
+    21300102: INTERNO_DETALHES_51
+    21300104: INTERNO_DETALHES_52
+    21300106: INTERNO_DETALHES_53
+    21300108: INTERNO_DETALHES_54
+    21300110: INTERNO_DETALHES_55
+    21300112: INTERNO_DETALHES_56
+    21300114: INTERNO_DETALHES_57
+    21300116: INTERNO_DETALHES_58
+    21300118: INTERNO_DETALHES_59
+    21300120: INTERNO_DETALHES_60
+    21300122: INTERNO_DETALHES_61
+    21300124: INTERNO_DETALHES_62
+    21300126: INTERNO_DETALHES_63
+    21300128: INTERNO_DETALHES_64
+    21300130: INTERNO_DETALHES_65
+    21300132: INTERNO_DETALHES_66
+    21300134: INTERNO_DETALHES_67
+    21300136: INTERNO_DETALHES_68
+    21300138: INTERNO_DETALHES_69
+    21300140: INTERNO_DETALHES_70
+    21300142: INTERNO_DETALHES_71
+    21300144: INTERNO_DETALHES_72
+    21300146: INTERNO_DETALHES_73
+    21300148: INTERNO_DETALHES_74
+    21300150: INTERNO_DETALHES_75
+    21300152: INTERNO_DETALHES_76
+    21300154: INTERNO_DETALHES_77
+    21300156: INTERNO_DETALHES_78
+    21300158: INTERNO_DETALHES_79
+    21300160: INTERNO_DETALHES_80
+    21300162: INTERNO_DETALHES_81
+    21300164: INTERNO_DETALHES_82
+    21300166: INTERNO_DETALHES_83
+    21300168: INTERNO_DETALHES_84
+    21300170: INTERNO_DETALHES_85
+    21300172: INTERNO_DETALHES_86
+    21300174: INTERNO_DETALHES_87
+    21300176: INTERNO_DETALHES_88
+    21300178: INTERNO_DETALHES_89
+    21300180: INTERNO_DETALHES_90
+    21300182: INTERNO_DETALHES_91
+    21300184: INTERNO_DETALHES_92
+    21300186: INTERNO_DETALHES_93
+  externalObjects: {}
+  serializedVersion: 7
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 1
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: Standalone
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 1
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_0
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 2988
+        width: 202
+        height: 1058
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ca4b3f8a6a8d9a469aef91ae8bc2cf3
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_1
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 2930
+        width: 208
+        height: 1173
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11cb27e4542c0f44eb2d026b14776dba
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_2
+      rect:
+        serializedVersion: 2
+        x: 1050
+        y: 3729
+        width: 285
+        height: 318
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc82a7a37f70c72478e0e3f9ddf2dd8e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_3
+      rect:
+        serializedVersion: 2
+        x: 1476
+        y: 3045
+        width: 122
+        height: 943
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3754fc35f4ed5843bd70341511b9f03
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_4
+      rect:
+        serializedVersion: 2
+        x: 1696
+        y: 3045
+        width: 122
+        height: 943
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1dcfb0d46d4c5545b6f73cca02c0bb0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_5
+      rect:
+        serializedVersion: 2
+        x: 1914
+        y: 3671
+        width: 961
+        height: 277
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9162f5c2054413b48aee8c87e24a7fe3
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_6
+      rect:
+        serializedVersion: 2
+        x: 1047
+        y: 3357
+        width: 284
+        height: 316
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0e457bab59cf0e42b8d1e8b19e73214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_7
+      rect:
+        serializedVersion: 2
+        x: 1913
+        y: 3241
+        width: 962
+        height: 277
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bdb26af4f65e59a4aa576e5ca10c0693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_8
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 2395
+        width: 682
+        height: 398
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6d41857d52e4bb43aa95e2d3021fb44
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_9
+      rect:
+        serializedVersion: 2
+        x: 1958
+        y: 2754
+        width: 65
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a20ea34f261ec8439bb1602c11385f7
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_10
+      rect:
+        serializedVersion: 2
+        x: 2315
+        y: 1455
+        width: 160
+        height: 1535
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f82f8a6c325e29449b0f7411fa4130c8
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_11
+      rect:
+        serializedVersion: 2
+        x: 2653
+        y: 793
+        width: 300
+        height: 2197
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74d90a92b88128e4eb09e69ba46c26f2
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_12
+      rect:
+        serializedVersion: 2
+        x: 1822
+        y: 2722
+        width: 85
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eff166ee5bd62234fa235088ba6e03b4
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_13
+      rect:
+        serializedVersion: 2
+        x: 1904
+        y: 2733
+        width: 26
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a753e97dd780254c8f523b272e714d9
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_14
+      rect:
+        serializedVersion: 2
+        x: 1930
+        y: 2718
+        width: 109
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ae2421fb8396c24eb3a747ce0c0945b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_15
+      rect:
+        serializedVersion: 2
+        x: 1091
+        y: 2038
+        width: 65
+        height: 637
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36d1ce4c5a5f8d94c99dd89ced65001f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_16
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 2340
+        width: 35
+        height: 323
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df94c8d230fd42b459e748d6eaa99911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_17
+      rect:
+        serializedVersion: 2
+        x: 1284
+        y: 2340
+        width: 35
+        height: 323
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0acd49dac45c05341b5d850a690a1102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_18
+      rect:
+        serializedVersion: 2
+        x: 1321
+        y: 2038
+        width: 65
+        height: 637
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f19a3024e5b2918459417ee556de7599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_19
+      rect:
+        serializedVersion: 2
+        x: 1636
+        y: 2397
+        width: 455
+        height: 327
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eaae1e80acc4cff40bf26f7a42bbde5b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_20
+      rect:
+        serializedVersion: 2
+        x: 2182
+        y: 2551
+        width: 80
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90e718288e6db7547bae37222a1f3192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_21
+      rect:
+        serializedVersion: 2
+        x: 2234
+        y: 2587
+        width: 42
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46b4e6c184402c74ab23457d5385495c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_22
+      rect:
+        serializedVersion: 2
+        x: 2225
+        y: 2574
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d60e75b2825ffaa4580f082eb636d915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_23
+      rect:
+        serializedVersion: 2
+        x: 2216
+        y: 2497
+        width: 100
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4dad28627ce2474e9f2c77239c5699a
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_24
+      rect:
+        serializedVersion: 2
+        x: 2204
+        y: 2463
+        width: 37
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a6a5999d47466d4487409c553fff55f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_25
+      rect:
+        serializedVersion: 2
+        x: 2078
+        y: 2421
+        width: 17
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3526dcb3845ccc4eb47bf2e4bffa624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_26
+      rect:
+        serializedVersion: 2
+        x: 1630
+        y: 2395
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: efb8dad6a04ac5a4eafaf2e6c7559389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_27
+      rect:
+        serializedVersion: 2
+        x: 1691
+        y: 2312
+        width: 110
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b0a9cf1bfe1ab24289e97931553e273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_28
+      rect:
+        serializedVersion: 2
+        x: 1727
+        y: 2348
+        width: 45
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc1b8dce612a53342b5418ee831d32d0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_29
+      rect:
+        serializedVersion: 2
+        x: 1797
+        y: 2327
+        width: 29
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e7de85399194724387daef130c9a24d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_30
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 1923
+        width: 682
+        height: 398
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2c614a866c5e9047880b3f0c4bfb651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_31
+      rect:
+        serializedVersion: 2
+        x: 1818
+        y: 2309
+        width: 5
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c562032243b223e4a844babff6edb132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_32
+      rect:
+        serializedVersion: 2
+        x: 1823
+        y: 2315
+        width: 85
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7690f1f454b4c1f479c42154289ccf44
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_35
+      rect:
+        serializedVersion: 2
+        x: 1640
+        y: 1991
+        width: 455
+        height: 323
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60bbe399071f06743ad0ea9121376b78
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_39
+      rect:
+        serializedVersion: 2
+        x: 1635
+        y: 2015
+        width: 17
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1440bd02632a45747a633643b85e2d54
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_40
+      rect:
+        serializedVersion: 2
+        x: 2092
+        y: 1988
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16e7a1a080b32c34bacedef14d91ab4d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_41
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 1784
+        width: 63
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1314145861b2ee64caa9da4dc3a9275b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_42
+      rect:
+        serializedVersion: 2
+        x: 986
+        y: 1772
+        width: 83
+        height: 93
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05834ead5a15efd40b754c959e08e9a6
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_43
+      rect:
+        serializedVersion: 2
+        x: 1127
+        y: 1772
+        width: 83
+        height: 93
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 148f54419fa303640aa278252b6d7c28
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_44
+      rect:
+        serializedVersion: 2
+        x: 599
+        y: 1762
+        width: 100
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9916391d55f07b44ad27d00fa506a10
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_45
+      rect:
+        serializedVersion: 2
+        x: 762
+        y: 1774
+        width: 24
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 048faa33dada2764f9dfb821b28429c0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_46
+      rect:
+        serializedVersion: 2
+        x: 507
+        y: 1709
+        width: 83
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce4ec7c87cf94304b8dc8547fee64adf
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_47
+      rect:
+        serializedVersion: 2
+        x: 698
+        y: 1700
+        width: 105
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e110605bf1d13c2468350740e9b61281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_48
+      rect:
+        serializedVersion: 2
+        x: 996
+        y: 1689
+        width: 42
+        height: 61
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4015c0102f1852646bdcc3c3cc81facf
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_49
+      rect:
+        serializedVersion: 2
+        x: 1144
+        y: 1688
+        width: 52
+        height: 61
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a3166d16893d094ca50f1461ae30d45
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_50
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 1688
+        width: 36
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d98bfc72729c56c4f824ae1ac0d6d10c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_51
+      rect:
+        serializedVersion: 2
+        x: 820
+        y: 1695
+        width: 81
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8533315e4f0cad64ca2f66e7c6ac1174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_52
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 1172
+        width: 816
+        height: 517
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a2edb57fd4d9c8459955320ecd343ae
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_54
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 1511
+        width: 174
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30f93ee431d5c0c4d8fcb72464f575db
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_55
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 1418
+        width: 109
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2f8d8e187a183e44bdb0abad7fe022c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_59
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 1363
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cebff356d82323e4db021e5dac95ca5e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_61
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 1260
+        width: 66
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bd91546aae9f1e48a61bdee3e56a27e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_63
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 1157
+        width: 113
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1a0a8d4a42c74d42aaa5f4a5cb934b8
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_64
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 1138
+        width: 173
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2304f0e149d9a1459da3f2207caac3e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_65
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 1163
+        width: 37
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7e97d56b5fbcb445bb032b453b02164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_72
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 1096
+        width: 84
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe00eeb98e04a2845a6ce9dfe664bb9b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_73
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 562
+        width: 1005
+        height: 515
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f72515ee1e78824590182ab4171b3bb
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_74
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 1076
+        width: 36
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb7ca8355406a4a448f5264b3d9fe5be
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_75
+      rect:
+        serializedVersion: 2
+        x: 938
+        y: 805
+        width: 174
+        height: 163
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c2550221f17c6d4c9f7c46b0a981f0b
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_76
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 791
+        width: 26
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1fdd0347ee4b3714e921070f89440358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_77
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 761
+        width: 111
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f9dd414b4f769149ba2498ef4f1f9cf
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_78
+      rect:
+        serializedVersion: 2
+        x: 1042
+        y: 717
+        width: 73
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 087888e712afb3348a2bd109a818a0cd
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_79
+      rect:
+        serializedVersion: 2
+        x: 1045
+        y: 750
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9145f19a3d681e447869c24d61c1a4cd
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_80
+      rect:
+        serializedVersion: 2
+        x: 877
+        y: 638
+        width: 139
+        height: 78
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c44632811bb07784faeeafeded189d43
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_81
+      rect:
+        serializedVersion: 2
+        x: 1030
+        y: 661
+        width: 89
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5e6174251c15474b9d0827b0d0c3590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_82
+      rect:
+        serializedVersion: 2
+        x: 1187
+        y: 706
+        width: 6
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a733b127a78936446a478a684e495988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_83
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 624
+        width: 39
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a60e516a5b2f33849b883919d9d226bc
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_84
+      rect:
+        serializedVersion: 2
+        x: 1069
+        y: 647
+        width: 65
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f176c7d3e3bff544af57557a8b29cbe
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_85
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 557
+        width: 49
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b09d56b0c5bf42e44ad8bf3c61880642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_86
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 542
+        width: 150
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7db9eb99648ceb4daa9b73dd4185cd0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_87
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 550
+        width: 37
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b904c309db1a01a4abdd298e8a9deceb
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_88
+      rect:
+        serializedVersion: 2
+        x: 708
+        y: 545
+        width: 112
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac005a9af19c6e841aa87cf60828b922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_89
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 534
+        width: 110
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d26937ebf088e7247b99309fa842e7cc
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_90
+      rect:
+        serializedVersion: 2
+        x: 717
+        y: 508
+        width: 126
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ed82d330f9e87c4e8bed9fa5bdd551f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_91
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 515
+        width: 38
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ba7fa8baf7daa24faf6049b17cf044f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: INTERNO_DETALHES_92
+      rect:
+        serializedVersion: 2
+        x: 698
+        y: 525
+        width: 5
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b58675846bd8f5478148b6afc270bed
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: c436fd31b8f3a58459f57ec0cf40bdc7
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

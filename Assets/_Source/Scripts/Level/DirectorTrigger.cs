@@ -16,7 +16,8 @@ public class DirectorTrigger : MonoBehaviour
         Once, Everytime,
     }
 
-    public GameObject triggeringGameObject;
+    GameObject triggeringGameObject;
+    public GetPlayerRef main;
     public PlayableDirector director;
     public TriggerType triggerType;
     public UnityEvent OnDirectorPlay;
@@ -26,6 +27,7 @@ public class DirectorTrigger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        triggeringGameObject = main.player.gameObject;
         if (other.gameObject != triggeringGameObject)
             return;
 

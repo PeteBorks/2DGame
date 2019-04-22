@@ -14,9 +14,22 @@ public class ButtonAction : MonoBehaviour
     ButtonActionTargetInfo[] buttonActionTargets;
     public float transitionDuration = 1;
     public AnimationCurve transitionCurve;
+    public Sprite activated;
+    SpriteRenderer sprite;
+    Light l;
+
+
+    void Start()
+    {
+        sprite = GetComponent<SpriteRenderer>();
+        l = GetComponentInChildren<Light>();
+    }
 
     public IEnumerator OnInteract()
     {
+        if(activated)
+            sprite.sprite = activated;
+        l.color = Color.green;
         float time = 0;
         while (time < transitionDuration)
         {

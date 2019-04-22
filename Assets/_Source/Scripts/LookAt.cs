@@ -11,10 +11,11 @@ public class LookAt : MonoBehaviour
     float dirNum;
     [SerializeField]
     SpriteRenderer sprite;
-    [SerializeField]
-    Light light1;
-    [SerializeField]
-    Light light2;
+
+    [HideInInspector]
+    public Light light1;
+    [HideInInspector]
+    public Light light2;
     public GameObject target;
     public bool isOn = true;
 
@@ -48,14 +49,14 @@ public class LookAt : MonoBehaviour
 
     public void lightsRight()
     {
-        light1.transform.localPosition = new Vector3(0.37f, light1.transform.localPosition.y, -0.07f);
-        light2.transform.localPosition = new Vector3(1.11f, light2.transform.localPosition.y, -0.07f);
+        light1.transform.localPosition = new Vector3(0.11f, light1.transform.localPosition.y, -0.03f);
+        light2.transform.localPosition = new Vector3(0.34f, light2.transform.localPosition.y, -0.03f);
     }
 
     public void lightsLeft()
     {
-        light1.transform.localPosition = new Vector3(-0.37f, light1.transform.localPosition.y, -0.07f);
-        light2.transform.localPosition = new Vector3(-1.11f, light2.transform.localPosition.y, -0.07f);
+        light1.transform.localPosition = new Vector3(-0.11f, light1.transform.localPosition.y, -0.03f);
+        light2.transform.localPosition = new Vector3(-0.34f, light2.transform.localPosition.y, -0.03f);
     }
 
     float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)

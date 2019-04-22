@@ -31,7 +31,9 @@ public class ButtonEnable : MonoBehaviour
 
     public void OnInteract()
     {
-        for(int i=0; i < buttonEnableTargets.Length; i++)
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        sprite.color = Color.green;
+        for (int i=0; i < buttonEnableTargets.Length; i++)
         {
             if(buttonEnableTargets[i].targetScript)
             {
@@ -41,7 +43,10 @@ public class ButtonEnable : MonoBehaviour
                 camTrigger.Execute();                
         }
         if(l)
+        {
             l.enabled = true;
+        }
+            
     }
 
     void OnValidate()

@@ -24,6 +24,7 @@ public class MeepController : MonoBehaviour
     public bool inputEnabled = false;
     float dirNum;
     public Rigidbody2D rb2D;
+    Animator animator;
     Vector2 movement;
     LookAt autoLook;
     CurrentPawn currentPawn;
@@ -31,9 +32,11 @@ public class MeepController : MonoBehaviour
 
     void Start()
     {
+        animator = GetComponentInChildren<Animator>();
         rb2D = GetComponent<Rigidbody2D>();
         collider2D5 = GetComponent<CircleCollider2D>();
         autoLook = GetComponent<LookAt>();
+        StartCoroutine(Blink());
     }
 
     void Update()
@@ -81,5 +84,13 @@ public class MeepController : MonoBehaviour
         GetComponent<Pathfinding.AIPath>().enabled = true;
         GetComponent<Pathfinding.SimpleSmoothModifier>().enabled = true;
         GetComponent<Pathfinding.FunnelModifier>().enabled = true;
+    }
+
+    IEnumerator Blink()
+    {
+        yield return new WaitForSeconds(Random.Range(3, 5));
+        animator.SetTrigger("blink");           
+        StartCoroutine(Blink());
+        
     }
 }

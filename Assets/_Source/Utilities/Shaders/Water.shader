@@ -76,7 +76,7 @@
 
 				half4 coloropa = tex2D(_ColorOpacity, i.uv + norm.xy * 0.1f);
 
-				half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos + float4(norm.x*0.5f, norm.y*0.5f, 0, 0));
+				half4 bgcolor = tex2Dproj(_BackgroundTexture, i.grabPos + float4(norm.x*0.5f, norm.y* 0.5f, 0, 0));
 
 				//col = lerp(col, float4(1, 1, 1, 1), step(0.98f, i.uv.y));
 

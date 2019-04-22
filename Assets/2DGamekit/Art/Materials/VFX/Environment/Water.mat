@@ -45,7 +45,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _DistortionNormalMap:
         m_Texture: {fileID: 2800000, guid: 4a8d4bb7c7c1895479b706a87b990707, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
@@ -72,7 +72,7 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DistortionStrength: 0.5
+    - _DistortionStrength: 0.1
     - _DstBlend: 0
     - _EnableExternalAlpha: 0
     - _GlossMapScale: 1
