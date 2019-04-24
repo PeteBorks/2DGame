@@ -49,14 +49,14 @@ public class LookAt : MonoBehaviour
 
     public void lightsRight()
     {
-        light1.transform.localPosition = new Vector3(0.11f, light1.transform.localPosition.y, -0.03f);
-        light2.transform.localPosition = new Vector3(0.34f, light2.transform.localPosition.y, -0.03f);
+        light1.transform.localPosition = new Vector3(0.11f, 0.084f, -0.03f);
+        light2.transform.localPosition = new Vector3(0.34f, 0.117f, -0.03f);
     }
 
     public void lightsLeft()
     {
-        light1.transform.localPosition = new Vector3(-0.11f, light1.transform.localPosition.y, -0.03f);
-        light2.transform.localPosition = new Vector3(-0.34f, light2.transform.localPosition.y, -0.03f);
+        light1.transform.localPosition = new Vector3(-0.11f, 0.084f, -0.03f);
+        light2.transform.localPosition = new Vector3(-0.34f, 0.117f, -0.03f);
     }
 
     float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)

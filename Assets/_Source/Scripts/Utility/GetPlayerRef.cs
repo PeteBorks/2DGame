@@ -33,15 +33,8 @@ public class GetPlayerRef : MonoBehaviour
 
     public void DisableInput()
     {
-        switch (main.currentPawn)
-        {
-            case Main.CurrentPawn.Stellar:
-                stellar.inputEnabled = false;
-                break;
-            case Main.CurrentPawn.Carrie:
-                player.inputEnabled = false;
-                break;
-        }
+        stellar.inputEnabled = false;
+        player.inputEnabled = false;
     }
 
     public void ChangePawn()
@@ -50,6 +43,8 @@ public class GetPlayerRef : MonoBehaviour
         {
             case Main.CurrentPawn.Stellar:
                 main.ChangePawn(1);
+                    stellar.state = MeepController.State.Auto;
+                    stellar.EnableFollowing();
                 break;
             case Main.CurrentPawn.Carrie:
                 main.ChangePawn(2);

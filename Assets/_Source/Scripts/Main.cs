@@ -64,19 +64,26 @@ public class Main : MonoBehaviour
         playerPawn.leftCam.SetActive(false);
         playerPawn.inputEnabled = false;
         stellar.mainCam.SetActive(true);
-        stellar.DisableFollowing();
-        stellar.collider2D5.enabled = true;
-        yield return new WaitForSeconds(1);
+        if(stellar.state == MeepController.State.Auto)
+            stellar.DisableFollowing();
+        stellar.circleCollider.enabled = true;
         stellar.inputEnabled = true;
+        yield return new WaitForSeconds(1);
+        if(stellar.state == MeepController.State.Auto)
+            stellar.state = MeepController.State.Controlled;
     }
 
     IEnumerator EnablePlayerPawn()
     {
         currentPawn = CurrentPawn.Carrie;
-        //stellar.rb2D.simulated = false;
         stellar.mainCam.SetActive(false);
         stellar.inputEnabled = false;
-        stellar.collider2D5.enabled = false;
+        if(stellar.state==MeepController.State.Controlled)
+        {
+            stellar.state = MeepController.State.Auto;
+            stellar.circleCollider.enabled = false;
+            stellar.bCollider.enabled = false;
+        }
         if(!playerPawn.animator.GetBool("isGrabbing"))
             playerPawn.rb2D.simulated = true;
         if (playerPawn.isFacingRight)
@@ -85,7 +92,7 @@ public class Main : MonoBehaviour
             playerPawn.leftCam.SetActive(true);
         yield return new WaitForSeconds(1);
         playerPawn.inputEnabled = true;
-        //stellar.rb2D.simulated = true;
-        stellar.EnableFollowing();
+        if (stellar.state == MeepController.State.Controlled)
+            stellar.EnableFollowing();
     }
 }

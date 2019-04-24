@@ -47,7 +47,6 @@ public class BaseEntity : MonoBehaviour
                 {
                     player.wallJumpDelay = 50;
                     player.Detach(false);
-                    player.rb2D.velocity = new Vector2(0, -10);
                 }
                 StartCoroutine(WaitForLanding(player));
             }

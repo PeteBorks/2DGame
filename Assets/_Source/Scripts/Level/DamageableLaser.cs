@@ -28,8 +28,13 @@ public class DamageableLaser : MonoBehaviour
 	{
 		if(collision.GetComponent<PlayerController>())
 			collision.GetComponent<PlayerController>().TakeDamage(damage);
-        if (collision.GetComponent<MeepController>())
+        if (collision.GetComponent<MeepController>() && collision.GetComponent<MeepController>().state == MeepController.State.Controlled)
+        {
             collision.GetComponent<MeepController>().mainScript.ChangePawn(1);
+            collision.GetComponent<MeepController>().state = MeepController.State.Auto;
+            collision.GetComponent<MeepController>().EnableFollowing();
+        }
+            
 	}
 
     IEnumerator OnOff()

@@ -265,6 +265,8 @@ public class PlayerController : BaseEntity
     {
         if (inputEnabled)
             movement = new Vector2(inputManager.horizontalAxis * speed, rb2D.velocity.y);
+        else if(!isSliding)
+            movement = new Vector2(0,rb2D.velocity.y);
         if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
             SwitchDirection();
 
@@ -292,19 +294,23 @@ public class PlayerController : BaseEntity
             {
                 animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
-                rb2D.bodyType = RigidbodyType2D.Static;
+                rb2D.velocity = Vector2.zero;
+                movement = Vector2.zero;
+                rb2D.gravityScale = 0;
                 sprite.flipX = true;
             }     
             if (leftSideCheck && !justJumpL)
             {
                 animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
-                rb2D.bodyType = RigidbodyType2D.Static;
+                rb2D.velocity = Vector2.zero;
+                movement = Vector2.zero;
+                rb2D.gravityScale = 0;
                 sprite.flipX = false;
             }
             
         }
-        if(!isDashing && rb2D.bodyType == RigidbodyType2D.Dynamic)
+        if(!isDashing && rb2D.gravityScale != 0)
             rb2D.velocity = movement;
 
     }
@@ -331,7 +337,7 @@ public class PlayerController : BaseEntity
 
     public void LeftSideDetach()
     {
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
+        rb2D.gravityScale = 3.25f;
         justJumpL = true;
         justJumpR = false;
         StartCoroutine(JustJumped(false));
@@ -339,7 +345,7 @@ public class PlayerController : BaseEntity
 
     public void RightSideDetach()
     {
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
+        rb2D.gravityScale = 3.25f;
         justJumpR = true;
         justJumpL = false;
         StartCoroutine(JustJumped(true));
