@@ -20,7 +20,7 @@ public class DamageableLaser : MonoBehaviour
     {
         if (!alwaysOn)
             RoutineHelper.StartRoutine(OnOff());
-        if (runIdleAnim)
+        if (runIdleAnim && GetComponent<Animator>())
             GetComponent<Animator>().SetTrigger("idle");
     }
 

@@ -16,12 +16,17 @@ public class InvisibleWall : MonoBehaviour
 	float duration;
 	[SerializeField]
 	float targetAlpha = 0.5f;
-	Material materialInstance;
+    [SerializeField]
+    GameObject[] objectsToToggle;
+    [SerializeField]
+    GameObject[] objectsToUntoggle;
 
-	[SerializeField]
-	GameObject [] objectsToToggle;
+    Material materialInstance;
+    public bool canDisable;
 
-	void Start()
+
+
+    void Start()
 	{
 		materialInstance = GetComponent<TilemapRenderer>().material;
 	}
@@ -35,10 +40,9 @@ public class InvisibleWall : MonoBehaviour
 		}
         	
 	}
-
-	void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
 	{
-		if(collision.GetComponent<PlayerController>() || collision.gameObject.CompareTag("Stellar"))
+		if((collision.GetComponent<PlayerController>() || collision.gameObject.CompareTag("Stellar")))
 		{
 			StartCoroutine(TransitionOut());
 			
@@ -51,12 +55,15 @@ public class InvisibleWall : MonoBehaviour
 		float time = 0;
 		float currentAlpha = color.a;
         if (objectsToToggle != null)
-        {
             foreach (GameObject obj in objectsToToggle)
             {
                 obj.SetActive(true);
             }
-        }
+        if (objectsToUntoggle != null)
+            foreach (GameObject obj in objectsToUntoggle)
+            {
+                obj.SetActive(false);
+            }
         while (time < duration)
 		{
 			time += Time.deltaTime;
@@ -72,12 +79,15 @@ public class InvisibleWall : MonoBehaviour
 		float time = 0;
 		float currentAlpha = color.a;
         if (objectsToToggle != null)
-        {
             foreach (GameObject obj in objectsToToggle)
             {
                 obj.SetActive(false);
             }
-        }
+        if (objectsToUntoggle != null)
+            foreach (GameObject obj in objectsToUntoggle)
+            {
+                obj.SetActive(true);
+            }
         while (time < duration)
 		{
 			time += Time.deltaTime;

@@ -46,12 +46,12 @@ public class Main : MonoBehaviour
         {
             case 1:
                 if(currentPawn != CurrentPawn.Carrie)
-                StartCoroutine(EnablePlayerPawn());
+                    StartCoroutine(EnablePlayerPawn());
                 break;
 
             case 2: 
                 if(currentPawn != CurrentPawn.Stellar)
-                StartCoroutine(EnableStellar());
+                    StartCoroutine(EnableStellar());
                 break;
         }
     }
@@ -75,6 +75,7 @@ public class Main : MonoBehaviour
 
     IEnumerator EnablePlayerPawn()
     {
+        
         currentPawn = CurrentPawn.Carrie;
         stellar.mainCam.SetActive(false);
         stellar.inputEnabled = false;
@@ -84,8 +85,8 @@ public class Main : MonoBehaviour
             stellar.circleCollider.enabled = false;
             stellar.bCollider.enabled = false;
         }
-        if(!playerPawn.animator.GetBool("isGrabbing"))
-            playerPawn.rb2D.simulated = true;
+        //if(!playerPawn.animator.GetBool("isGrabbing"))
+        playerPawn.rb2D.simulated = true;
         if (playerPawn.isFacingRight)
             playerPawn.rightCam.SetActive(true);
         else

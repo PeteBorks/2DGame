@@ -29,6 +29,8 @@ public class MeepController : MonoBehaviour
     public Rigidbody2D rb2D;
     [HideInInspector]
     public State state;
+    [HideInInspector]
+    public bool reset;
 
     float dirNum;
     Animator animator;
@@ -36,6 +38,7 @@ public class MeepController : MonoBehaviour
     LookAt autoLook;
     Light[] lights;
     Color defaultColor;
+
 
 
     void Start()
@@ -105,7 +108,7 @@ public class MeepController : MonoBehaviour
                 break;
 
             case State.Platform:
-                if (inputEnabled && (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical")))
+                if ((inputEnabled && (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical"))) || reset)
                 {
                     animator.SetBool("isPlatform", false);
                     StartCoroutine(WaitForAnim());
@@ -162,10 +165,23 @@ public class MeepController : MonoBehaviour
             yield return null;
         }
         yield return new WaitUntil(() => t >= animator.GetCurrentAnimatorStateInfo(0).length);
-        state = State.Controlled;
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
-        bCollider.enabled = false;
         for (int i = 0; i < lights.Length; i++)
             lights[i].color = defaultColor;
+        bCollider.enabled = false;
+        if (reset)
+        {
+            reset = false;
+            mainScript.ChangePawn(1);
+            state = State.Auto;
+            EnableFollowing();
+        }
+        else
+        {
+            state = State.Controlled;
+            rb2D.bodyType = RigidbodyType2D.Dynamic;
+        }
+        
+        
+        
     }
 }

@@ -68,7 +68,7 @@ public class PlayerController : BaseEntity
     InputManager inputManager;
     float normalSpeed;
     float gravityScale;
-    [HideInInspector]
+    //[HideInInspector]
     public bool inputEnabled = true;
     bool canSlide = true;
     bool canDash = true;
@@ -99,6 +99,7 @@ public class PlayerController : BaseEntity
     Vector3 barrelFXDefaultPos;
     Vector3 barrelFXJumpingPos;
     GameObject target;
+    Main mainScript;
     
     public Vector2 movement;
     RaycastHit2D groundHit;
@@ -112,6 +113,7 @@ public class PlayerController : BaseEntity
 
     void Start()
     {
+        mainScript = FindObjectOfType<Main>();
         inputManager = GetComponent<InputManager>();
         currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();
         camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
@@ -189,7 +191,7 @@ public class PlayerController : BaseEntity
             movement = Vector2.zero;
 
         }
-        else if ((!isGrounded && !groundHit) && health!=0)
+        else if ((!isGrounded && !groundHit) && health!=0 && !animator.GetBool("isGrabbing"))
         {
             animator.SetBool("isSliding", false);
             isRotSliding = false;
@@ -248,7 +250,6 @@ public class PlayerController : BaseEntity
 
         if (inputEnabled && inputManager.changePawn && ((movement.x < 0.1f && movement.x > -0.1f && isGrounded) || animator.GetBool("isGrabbing")))
         {
-            Main mainScript = FindObjectOfType<Main>();
             mainScript.ChangePawn(2);
         }
 
@@ -265,14 +266,14 @@ public class PlayerController : BaseEntity
     {
         if (inputEnabled)
             movement = new Vector2(inputManager.horizontalAxis * speed, rb2D.velocity.y);
-        else if(!isSliding)
+        else if(!isSliding && !isRotSliding)
             movement = new Vector2(0,rb2D.velocity.y);
         if ((movement.x < 0 && isFacingRight) || (movement.x > 0 && !isFacingRight))
             SwitchDirection();
 
         animator.SetFloat("speed", Mathf.Abs(movement.x));
         
-        if (jump && animator.GetBool("isGrabbing"))
+        if (mainScript.currentPawn==Main.CurrentPawn.Carrie && jump && animator.GetBool("isGrabbing"))
         {
             Detach(true);
         }
@@ -292,6 +293,8 @@ public class PlayerController : BaseEntity
         {
             if (rightSideCheck && !justJumpR)
             {
+                if (isDashing)
+                    StartCoroutine(StopDashing());
                 animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
                 rb2D.velocity = Vector2.zero;
@@ -301,6 +304,8 @@ public class PlayerController : BaseEntity
             }     
             if (leftSideCheck && !justJumpL)
             {
+                if (isDashing)
+                    StartCoroutine(StopDashing());
                 animator.SetBool("isFiring", false);
                 animator.SetBool("isGrabbing", true);
                 rb2D.velocity = Vector2.zero;
@@ -308,6 +313,7 @@ public class PlayerController : BaseEntity
                 rb2D.gravityScale = 0;
                 sprite.flipX = false;
             }
+            
             
         }
         if(!isDashing && rb2D.gravityScale != 0)
@@ -399,7 +405,7 @@ public class PlayerController : BaseEntity
                 barrelFXSocket.transform.localPosition = new Vector3(-barrelFXDefaultPos.x, barrelFXDefaultPos.y, barrelFXDefaultPos.z);
             else
                 barrelFXSocket.transform.localPosition = new Vector3(-barrelFXJumpingPos.x, barrelFXJumpingPos.y, barrelFXJumpingPos.z);
-            if(!middleCam.activeSelf)
+            if(!middleCam.activeSelf && mainScript.currentPawn==Main.CurrentPawn.Carrie)
             {
                 rightCam.SetActive(false);
                 leftCam.SetActive(true);
@@ -413,7 +419,7 @@ public class PlayerController : BaseEntity
         {
             barrelFXSocket.transform.localScale = new Vector3(1, 1, 1);
             barrelFXSocket.transform.localPosition = barrelFXDefaultPos;
-            if(!middleCam.activeSelf)
+            if(!middleCam.activeSelf && mainScript.currentPawn==Main.CurrentPawn.Carrie)
             {
                 leftCam.SetActive(false);
                 rightCam.SetActive(true);
