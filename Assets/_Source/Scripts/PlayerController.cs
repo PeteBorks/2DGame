@@ -72,7 +72,7 @@ public class PlayerController : BaseEntity
     public bool inputEnabled = true;
     bool canSlide = true;
     bool canDash = true;
-    [HideInInspector]
+    
     public bool isFacingRight = true;
     [HideInInspector]
     public bool isGrounded = true;
@@ -177,7 +177,13 @@ public class PlayerController : BaseEntity
             
         }
 
-        groundHit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down, 0.5f);
+        if(!animator.GetBool("isGrabbing"))
+            if (isFacingRight && sprite.flipX)
+                sprite.flipX = false;
+            else if (!isFacingRight && !sprite.flipX)
+                sprite.flipX = true;
+
+        groundHit = Physics2D.Raycast(transform.position + Vector3.up * 0.7f + Vector3.left * 0.51f, Vector3.down, 0.5f, LayerMask.GetMask("Default"));
         axis = Vector3.Cross(-transform.up, -groundHit.normal);
 
         if (axis != Vector3.zero && !groundHit.collider.CompareTag("Enemy"))
@@ -191,7 +197,7 @@ public class PlayerController : BaseEntity
             movement = Vector2.zero;
 
         }
-        else if ((!isGrounded && !groundHit) && health!=0 && !animator.GetBool("isGrabbing"))
+        else if ((!isGrounded && !groundHit) && health!=0 && !animator.GetBool("isGrabbing") && !isDashing)
         {
             animator.SetBool("isSliding", false);
             isRotSliding = false;
@@ -454,10 +460,10 @@ public class PlayerController : BaseEntity
     }
     IEnumerator Dash()
     {
+        isDashing = true;
         inputEnabled = false;
         canDash = false;
         movement = Vector2.zero;
-        isDashing = true;
         animator.SetBool("dash", true);
         animator.SetBool("isFiring", false);
         rb2D.velocity = new Vector2(0, 0);

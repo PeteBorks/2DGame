@@ -44,7 +44,7 @@ public class ButtonEnable : MonoBehaviour
         }
         if(l)
         {
-            l.enabled = true;
+            l.color = Color.green;
         }
             
     }

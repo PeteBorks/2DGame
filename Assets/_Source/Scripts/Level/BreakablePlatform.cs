@@ -16,32 +16,36 @@ public class BreakablePlatform : MonoBehaviour
     float breakDelay = 1;
     [SerializeField, Range(0, 5)]
     float reactivateTime = 3;
-    public Color defaultColor;
-    public Color breakColor = Color.black;
     public AnimationCurve transitionCurve;
-    public Light [] l;
-    public PlayerController player;
+    Light [] lights;
+    float [] defaultIntensity;
     [HideInInspector]
     public bool coroutineStarted;
+    Animator animator;
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         bcollider2D = GetComponent<BoxCollider2D>();
+        lights = GetComponentsInChildren<Light>();
+            if(lights[0])
+        defaultIntensity[0] = lights[0].intensity;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        StartCoroutine(BreakBlock(DestroyBlock));
-        player = collision.gameObject.GetComponent<PlayerController>(); ;
+        if(collision.gameObject.GetComponent<PlayerController>())
+            StartCoroutine(BreakBlock(DestroyBlock));
     }
 
     public IEnumerator BreakBlock(System.Action onComplete = null)
     {
+        animator.SetBool("isBreaking", true);
         float time = 0;
-        while(time < breakDelay)
+        while(time < animator.GetCurrentAnimatorStateInfo(0).length)
         {
             time += Time.deltaTime;
-            sprite.color = Color.Lerp(defaultColor, breakColor, transitionCurve.Evaluate(time / breakDelay));
+            
             yield return null;
         }
         onComplete?.Invoke();
@@ -49,20 +53,25 @@ public class BreakablePlatform : MonoBehaviour
 
     public virtual void DestroyBlock()
     {
+        animator.SetBool("isBreaking", false);
         bcollider2D.enabled = false;
-        for(int i = 0; i < l.Length; i++)
-            l[i].enabled = false;
+        
         StartCoroutine(ReactivateBlock(ReactivateComplete));
     }
 
     public IEnumerator ReactivateBlock(System.Action onComplete = null)
     {
+        animator.SetBool("isRecovering", true);
+        foreach(Light l in lights)
+        {
+            l.color = Color.red;
+        }
         float time2 = 0;
-        
-        while (time2 < reactivateTime)
+
+        while (time2 < animator.GetCurrentAnimatorStateInfo(0).length) 
         {
             time2 += Time.deltaTime;
-            sprite.color = Color.Lerp(breakColor, defaultColor, transitionCurve.Evaluate(time2 / reactivateTime));
+    
             yield return null;
         }
         onComplete?.Invoke();
@@ -70,17 +79,16 @@ public class BreakablePlatform : MonoBehaviour
     
     public void ReactivateComplete()
     {
+        animator.SetBool("isRecovering", false);
+        foreach (Light l in lights)
+        {
+            l.color = Color.green;
+        }
         bcollider2D.enabled = true;
-        for (int i = 0; i < l.Length; i++)
-            l[i].enabled = true;
-        sprite.color = defaultColor;
         coroutineStarted = false;
     }
-
     void OnValidate()
     {
         sprite = GetComponent<SpriteRenderer>();
-        
-        defaultColor = sprite.color;
     }
 }

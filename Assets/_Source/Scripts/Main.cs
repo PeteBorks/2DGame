@@ -45,12 +45,12 @@ public class Main : MonoBehaviour
         switch(pawnN)
         {
             case 1:
-                if(currentPawn != CurrentPawn.Carrie)
+                //if(currentPawn != CurrentPawn.Carrie)
                     StartCoroutine(EnablePlayerPawn());
                 break;
 
             case 2: 
-                if(currentPawn != CurrentPawn.Stellar)
+                //if(currentPawn != CurrentPawn.Stellar)
                     StartCoroutine(EnableStellar());
                 break;
         }
@@ -63,7 +63,7 @@ public class Main : MonoBehaviour
         playerPawn.rightCam.SetActive(false);
         playerPawn.leftCam.SetActive(false);
         playerPawn.inputEnabled = false;
-        stellar.mainCam.SetActive(true);
+        stellar.defaultCam.SetActive(true);
         if(stellar.state == MeepController.State.Auto)
             stellar.DisableFollowing();
         stellar.circleCollider.enabled = true;
@@ -77,7 +77,7 @@ public class Main : MonoBehaviour
     {
         
         currentPawn = CurrentPawn.Carrie;
-        stellar.mainCam.SetActive(false);
+        stellar.defaultCam.SetActive(false);
         stellar.inputEnabled = false;
         if(stellar.state==MeepController.State.Controlled)
         {

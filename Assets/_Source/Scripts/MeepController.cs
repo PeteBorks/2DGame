@@ -11,14 +11,21 @@ public class MeepController : MonoBehaviour
     }
 
     [Header("Movement")]
-    [SerializeField, Range(0, 10)]
-    float speed = 5f;
+    [Range(0, 10)]
+    public float speed = 5f;
+    [SerializeField]
+    float distanceLimit = 15;
+    [SerializeField]
+    float distanceToReset = 10;
     [Header("References")]
     public GameObject mainCam;
+    public GameObject closeCam;
     public Main mainScript;
     [SerializeField]
     SpriteRenderer sprite;
 
+    [HideInInspector]
+    public GameObject defaultCam;
     [HideInInspector]
     public Collider2D circleCollider;
     [HideInInspector]
@@ -27,10 +34,11 @@ public class MeepController : MonoBehaviour
     public bool inputEnabled = false;
     [HideInInspector]
     public Rigidbody2D rb2D;
-    [HideInInspector]
+    
     public State state;
-    [HideInInspector]
+    
     public bool reset;
+    bool playingCoroutine;
 
     float dirNum;
     Animator animator;
@@ -43,7 +51,6 @@ public class MeepController : MonoBehaviour
 
     void Start()
     {
-        
         lights = GetComponentsInChildren<Light>();
         animator = GetComponentInChildren<Animator>();
         rb2D = GetComponent<Rigidbody2D>();
@@ -51,12 +58,13 @@ public class MeepController : MonoBehaviour
         bCollider = GetComponent<BoxCollider2D>();
         autoLook = GetComponent<LookAt>();
         defaultColor = lights[0].color;
+        defaultCam = mainCam;
         StartCoroutine(Blink());
     }
 
     void Update()
     {
-        if (state != State.Platform)
+        if(state != State.Platform)
             if(sprite.flipX)
                 autoLook.lightsLeft();
             else
@@ -65,14 +73,15 @@ public class MeepController : MonoBehaviour
         switch (state)
         {
             case State.Auto:
-                inputEnabled = false;
+                //inputEnabled = false;
+                defaultCam = mainCam;
                 autoLook.isOn = true;
                 break;
 
             case State.Controlled:
-                inputEnabled = true;
+                //inputEnabled = true;
                 autoLook.isOn = false;
-                movement = new Vector2(Input.GetAxis("Horizontal") * speed, Input.GetAxis("Vertical") * speed);
+                movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
                 if (((movement.x < 0 && !sprite.flipX) || (movement.x > 0 && sprite.flipX)))
                     sprite.flipX = !sprite.flipX;
                 if (inputEnabled && Input.GetButtonDown("ChangePawn"))
@@ -83,6 +92,8 @@ public class MeepController : MonoBehaviour
                 }
                 if (inputEnabled && Input.GetButtonDown("Fire1"))
                 {
+                    inputEnabled = false;
+                    StartCoroutine(WaitForIn());
                     state = State.Platform;
                     animator.SetLayerWeight(1, 0);
                     animator.SetBool("isPlatform",true);
@@ -111,6 +122,8 @@ public class MeepController : MonoBehaviour
                 if ((inputEnabled && (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical"))) || reset)
                 {
                     animator.SetBool("isPlatform", false);
+                    inputEnabled = false;
+                    
                     StartCoroutine(WaitForAnim());
                 }
                 if (inputEnabled && Input.GetButtonDown("ChangePawn"))
@@ -118,7 +131,14 @@ public class MeepController : MonoBehaviour
                     mainScript.ChangePawn(1);
                     inputEnabled = false;
                 }
-                 
+                if (Vector3.Distance(transform.position, mainScript.playerPawn.transform.position) > distanceToReset && !playingCoroutine)
+                {
+                    reset = true;
+                    inputEnabled = false;
+                    bCollider.enabled = false;
+                    circleCollider.enabled = false;
+                }
+                    
                 break;
         }
 
@@ -128,7 +148,7 @@ public class MeepController : MonoBehaviour
     private void FixedUpdate()
     {
         if (state == State.Controlled) 
-            rb2D.AddForce(Vector2.ClampMagnitude(movement * 40, 40));
+            rb2D.AddForce(Vector2.ClampMagnitude(movement * speed * 10, 40));
         
     }
 
@@ -158,6 +178,42 @@ public class MeepController : MonoBehaviour
 
     IEnumerator WaitForAnim()
     {
+        float animLenght = animator.GetCurrentAnimatorStateInfo(0).length;
+        playingCoroutine = true;
+        bool wasReset = false;
+        if (reset)
+            wasReset = true;
+        reset = false;
+        float t = 0;
+        while (t < animLenght)
+        {
+            t += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitUntil(() => t >= animLenght);
+        for (int i = 0; i < lights.Length; i++)
+            lights[i].color = defaultColor;
+        bCollider.enabled = false;
+        playingCoroutine = false;
+        if (wasReset && mainScript.currentPawn == Main.CurrentPawn.Carrie)
+        {
+            wasReset = false;
+            rb2D.bodyType = RigidbodyType2D.Dynamic;
+            mainScript.ChangePawn(1);
+            inputEnabled = false;
+            state = State.Auto;
+            EnableFollowing();
+        }
+        else
+        {
+            inputEnabled = true;
+            state = State.Controlled;
+            rb2D.bodyType = RigidbodyType2D.Dynamic;
+        }       
+    }
+
+    IEnumerator WaitForIn()
+    {
         float t = 0;
         while (t < animator.GetCurrentAnimatorStateInfo(0).length)
         {
@@ -165,23 +221,31 @@ public class MeepController : MonoBehaviour
             yield return null;
         }
         yield return new WaitUntil(() => t >= animator.GetCurrentAnimatorStateInfo(0).length);
-        for (int i = 0; i < lights.Length; i++)
-            lights[i].color = defaultColor;
-        bCollider.enabled = false;
-        if (reset)
+        inputEnabled = true;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, distanceToReset);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, distanceLimit);
+    }
+
+    public void ChangeCam()
+    {
+        if (mainCam.activeSelf && !closeCam.activeSelf)
         {
-            reset = false;
-            mainScript.ChangePawn(1);
-            state = State.Auto;
-            EnableFollowing();
+            closeCam.SetActive(true);
+            mainCam.SetActive(false);
+            defaultCam = closeCam;
         }
-        else
+        else if (closeCam.activeSelf && !mainCam.activeSelf)
         {
-            state = State.Controlled;
-            rb2D.bodyType = RigidbodyType2D.Dynamic;
+            mainCam.SetActive(true);
+            closeCam.SetActive(false);
+            defaultCam = mainCam;
         }
-        
-        
-        
+            
     }
 }

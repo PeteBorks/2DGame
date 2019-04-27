@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5706631993361814838}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.128, y: -0.032074165, z: -0.13}
+  m_LocalPosition: {x: -0.128, y: -0.032074165, z: -0.025}
   m_LocalScale: {x: 1.0000023, y: 0.9999969, z: 1}
   m_Children: []
   m_Father: {fileID: 915133396796333852}
@@ -43,8 +43,8 @@ Light:
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 1, g: 0.78355986, b: 0.5896226, a: 1}
-  m_Intensity: 3
-  m_Range: 0.8
+  m_Intensity: 6
+  m_Range: 3
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.05
   intensity1: 0
-  intensity2: 3
+  intensity2: 6
 --- !u!1 &6255168917785969384
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 1244840213726255089}
   - component: {fileID: 7484717990082580715}
   m_Layer: 0
-  m_Name: BarrelFX
+  m_Name: PlayerBarrelFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
