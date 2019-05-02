@@ -26,6 +26,7 @@ public class EnemyPatrol : BaseEntity
     float detectionDistance;
     [SerializeField]
     bool flipSide;
+    public bool plusMode;
     [Header ("References")]
     [SerializeField]
     GameObject bullet;
@@ -45,6 +46,7 @@ public class EnemyPatrol : BaseEntity
     Ray detectionRay;
     RaycastHit2D hit;
     Light headLight;
+    
 
     void Start()
     {
@@ -170,7 +172,16 @@ public class EnemyPatrol : BaseEntity
         animator.SetTrigger("fire");
         yield return new WaitForSeconds(fireCooldown/8);
         animator.SetTrigger("fire");
-        canBeHit = true;
+        if(!plusMode)
+        {
+            canBeHit = true;
+        }
+        else
+        {
+            yield return new WaitForSeconds(fireCooldown / 8);
+            animator.SetTrigger("fire");
+            canBeHit = true;
+        }
         yield return new WaitForSeconds(fireCooldown);
         canBeHit = false;
         isCoroutineStarted = false;

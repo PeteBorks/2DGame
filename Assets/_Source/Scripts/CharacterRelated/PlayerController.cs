@@ -6,6 +6,7 @@
  
 using System.Collections;
 using Cinemachine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine;
 
 [SelectionBase]
@@ -17,6 +18,8 @@ public class PlayerController : BaseEntity
     float speed = 1f;
     [Range(0, 2)]
     public float wallJumpDelay = 1f;
+    [SerializeField]
+    float jumpDelay = 0.1f;
     [SerializeField, Range(0, 30)]
     float dashSpeed = 14;
     [SerializeField, Range(0, 1)]
@@ -39,6 +42,9 @@ public class PlayerController : BaseEntity
     float cameraShakeAmplitude;
     [SerializeField, Range(0, 4)]
     float cameraShakeFrequency;
+    [SerializeField]
+    PostProcessVolume postProcessVolume;
+    
 
     [Header("References")]
     [SerializeField]
@@ -64,7 +70,11 @@ public class PlayerController : BaseEntity
     GameObject barrelFXSocket;
     [SerializeField]
     GameObject meleeFX;
+    [SerializeField]
+    ParticleSystem dashParticle;
 
+    ChromaticAberration chromaticAberrationLayer = null;
+    Bloom bloomLayer = null;
     InputManager inputManager;
     float normalSpeed;
     float gravityScale;
@@ -89,6 +99,8 @@ public class PlayerController : BaseEntity
     bool jump;
     bool isOnTrigger = false;
     bool isRotSliding;
+
+    ParticleSystem activatedParticle;
     GameObject interactableObject;
     RaycastHit2D[] results = new RaycastHit2D[1];
     ContactFilter2D filter;
@@ -117,6 +129,8 @@ public class PlayerController : BaseEntity
         inputManager = GetComponent<InputManager>();
         currentCam = rightCam.GetComponent<CinemachineVirtualCamera>();
         camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
+        postProcessVolume.profile.TryGetSettings(out chromaticAberrationLayer);
+        postProcessVolume.profile.TryGetSettings(out bloomLayer);
         filter = new ContactFilter2D()
         {
             useLayerMask = true,
@@ -168,7 +182,17 @@ public class PlayerController : BaseEntity
 
         if ((inputEnabled || (animator.GetBool("isSliding") && !ceilingCheck || isRotSliding)) && inputManager.jump && (isGrounded || animator.GetBool("isGrabbing")))
         {
-            jump = true;
+            if(isGrounded && !isSliding && !isRotSliding)
+            {
+                StartCoroutine(Jump());
+                animator.SetTrigger("jump");
+            }
+            else
+            {
+                animator.SetBool("isOnAir", true);
+                jump = true;
+            }
+                
             inputEnabled = true;
             if (isFacingRight)
                 barrelFXSocket.transform.localPosition = barrelFXJumpingPos;
@@ -285,13 +309,12 @@ public class PlayerController : BaseEntity
         }
         else if (jump)
         {
-            animator.SetBool("isOnAir", true);
             if (isSliding)
             {
                 StartCoroutine(StopSliding());
             }
             movement.y = jumpForce; // AddForce
-            jump = false;
+            jump = false;         
         }
 
         
@@ -419,7 +442,11 @@ public class PlayerController : BaseEntity
             }
             
             if(!animator.GetBool("isGrabbing"))
+            {
                 sprite.flipX = true;
+
+            }
+                
         }
         else
         {
@@ -433,7 +460,10 @@ public class PlayerController : BaseEntity
             }
             
             if (!animator.GetBool("isGrabbing"))
+            {
                 sprite.flipX = false;
+            }
+                
         }
         camNoise = currentCam.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         isFacingRight = !isFacingRight;
@@ -447,19 +477,32 @@ public class PlayerController : BaseEntity
     IEnumerator FireDelay()
     {
         animator.SetBool("isFiring", true);
+        chromaticAberrationLayer.intensity.value = 0.4f;
+        bloomLayer.intensity.value = 7;
         camNoise.m_AmplitudeGain = cameraShakeAmplitude;
         camNoise.m_FrequencyGain = cameraShakeFrequency;
         inputEnabled = false;
         movement = new Vector2(0, rb2D.velocity.y);
         yield return new WaitForSeconds(fireCooldown);
+        chromaticAberrationLayer.intensity.value = 0.1f;
+        bloomLayer.intensity.value = 6;
         camNoise.m_AmplitudeGain = 0;
         camNoise.m_FrequencyGain = 0;
         inputEnabled = true;
         if(isGrounded)
             animator.SetBool("isFiring", false);
     }
+
+    IEnumerator Jump()
+    {
+        yield return new WaitForSeconds(jumpDelay/2);
+        jump = true;
+        yield return new WaitForSeconds(jumpDelay / 2);
+        animator.SetBool("isOnAir", true);
+    }
     IEnumerator Dash()
     {
+        chromaticAberrationLayer.intensity.value = 0.4f;
         isDashing = true;
         inputEnabled = false;
         canDash = false;
@@ -472,13 +515,22 @@ public class PlayerController : BaseEntity
             rb2D.AddForce(new Vector2(dashSpeed, 0), ForceMode2D.Impulse);
         else
             rb2D.AddForce(new Vector2(-dashSpeed, 0), ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.05f);
+        ParticleSystemRenderer particle = dashParticle.GetComponent<ParticleSystemRenderer>();
+        if (isFacingRight)
+            particle.flip = new Vector3(0, 0, 0);
+        else
+            particle.flip = new Vector3(1, 0, 0);
+        activatedParticle = Instantiate(dashParticle, transform.position + Vector3.up * 1, Quaternion.identity, transform);
         yield return new WaitForSeconds(dashDuration);
         StartCoroutine("StopDashing");
     }
     IEnumerator StopDashing()
     {
+        chromaticAberrationLayer.intensity.value = 0.1f;
         StopCoroutine("Dash");
         movement = Vector2.zero;
+        dashParticle.Stop();
         rb2D.gravityScale = gravityScale;
         inputEnabled = true;
         isDashing = false;
@@ -497,6 +549,7 @@ public class PlayerController : BaseEntity
         collider2d.direction = CapsuleDirection2D.Horizontal;
         collider2d.offset = new Vector2(0, 0.55f);
         collider2d.size = new Vector2(1f, 1.1f);
+        
         if (isFacingRight)
             movement = new Vector2(speed, rb2D.velocity.y);
         else
@@ -506,6 +559,7 @@ public class PlayerController : BaseEntity
             wantToStandUp = true;
         else
             StartCoroutine("StopSliding");
+        
     }
     IEnumerator StopSliding()
     {
@@ -518,8 +572,13 @@ public class PlayerController : BaseEntity
         animator.SetBool("isSliding", false);
         isSliding = false;
         inputEnabled = true;
+        if(activatedParticle)
+            activatedParticle.Stop();
         yield return new WaitForSeconds(slideCooldown);
         canSlide = true;
+        if(activatedParticle)
+        Destroy(activatedParticle.gameObject);
+
     }
     IEnumerator JustJumped(bool right)
     {
