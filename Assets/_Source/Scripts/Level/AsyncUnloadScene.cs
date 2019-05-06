@@ -14,8 +14,8 @@ public class AsyncUnloadScene : MonoBehaviour
     int sceneIndexToUnload;
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if(SceneManager.GetSceneByBuildIndex(sceneIndexToUnload).isLoaded)
-        StartCoroutine(UnloadScene());
+        if (SceneManager.GetSceneByBuildIndex(sceneIndexToUnload).isLoaded && collision.GetComponent<PlayerController>()) 
+            StartCoroutine(UnloadScene());
     }
 
     IEnumerator UnloadScene()

@@ -73,6 +73,7 @@ public class PlayerController : BaseEntity
     [SerializeField]
     ParticleSystem dashParticle;
 
+    public CheckpointComponent currentCheckpoint;
     ChromaticAberration chromaticAberrationLayer = null;
     Bloom bloomLayer = null;
     InputManager inputManager;
@@ -477,7 +478,7 @@ public class PlayerController : BaseEntity
     IEnumerator FireDelay()
     {
         animator.SetBool("isFiring", true);
-        chromaticAberrationLayer.intensity.value = 0.4f;
+        chromaticAberrationLayer.intensity.value = 0.45f;
         bloomLayer.intensity.value = 7;
         camNoise.m_AmplitudeGain = cameraShakeAmplitude;
         camNoise.m_FrequencyGain = cameraShakeFrequency;
@@ -502,7 +503,7 @@ public class PlayerController : BaseEntity
     }
     IEnumerator Dash()
     {
-        chromaticAberrationLayer.intensity.value = 0.4f;
+        chromaticAberrationLayer.intensity.value = 0.45f;
         isDashing = true;
         inputEnabled = false;
         canDash = false;

@@ -28,8 +28,8 @@ public class BreakablePlatform : MonoBehaviour
         animator = GetComponent<Animator>();
         bcollider2D = GetComponent<BoxCollider2D>();
         lights = GetComponentsInChildren<Light>();
-            if(lights[0])
-        defaultIntensity[0] = lights[0].intensity;
+         //   if(lights[0])
+        //defaultIntensity[0] = lights[0].intensity;
     }
 
     void OnCollisionEnter2D(Collision2D collision)

@@ -62,8 +62,19 @@ public class BaseEntity : MonoBehaviour
     {
         yield return new WaitUntil(() => p.isGrounded);
         p.animator.SetBool("isDead", true);
+        p.inputEnabled = false;
         gameObject.GetComponent<Collider2D>().enabled = false;
         gameObject.GetComponent<Rigidbody2D>().simulated = false;
+        p.animator.enabled = false;
+        yield return new WaitForSeconds(3);
+        p.animator.SetBool("isDead", false);
+        
+        p.animator.enabled = true;
+        p.inputEnabled = true;
+        p.wallJumpDelay = 1.5f;
+        gameObject.GetComponent<Collider2D>().enabled = true;
+        gameObject.GetComponent<Rigidbody2D>().simulated = true;
+        FindObjectOfType<Main>().ResetToCheckpoint();
     }
 
 }

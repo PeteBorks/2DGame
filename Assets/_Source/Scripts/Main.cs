@@ -18,6 +18,7 @@ public class Main : MonoBehaviour
     public PlayerController playerPawn;
     public MeepController stellar;
     public CurrentPawn currentPawn;
+    public CheckpointComponent currentCheckpoint;
 
     private void Awake()
     {
@@ -54,6 +55,12 @@ public class Main : MonoBehaviour
                     StartCoroutine(EnableStellar());
                 break;
         }
+    }
+
+    public void ResetToCheckpoint()
+    {
+        playerPawn.health = 100;
+        playerPawn.transform.position = currentCheckpoint.loadLocation.position;
     }
 
     IEnumerator EnableStellar()
