@@ -30,9 +30,10 @@ public class LifeStation : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if(mesh.enabled && collision.GetComponent<PlayerController>())
+        PlayerController player = collision.GetComponent<PlayerController>();
+        if (mesh.enabled && player && player.health < 100)
         {
-            collision.GetComponent<PlayerController>().health += 50;
+            player.health += 50;
             particle1.Stop();
             ParticleSystem.MainModule main = particle1.main;
             main.simulationSpeed = 3.5f;

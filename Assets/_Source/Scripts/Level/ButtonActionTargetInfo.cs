@@ -14,4 +14,5 @@ public class ButtonActionTargetInfo
     public Vector3 target;
     //[HideInInspector]
     public Vector3 origin;
+    public bool useDifSprite;
 }

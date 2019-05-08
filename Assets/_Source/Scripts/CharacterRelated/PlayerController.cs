@@ -73,7 +73,6 @@ public class PlayerController : BaseEntity
     [SerializeField]
     ParticleSystem dashParticle;
 
-    public CheckpointComponent currentCheckpoint;
     ChromaticAberration chromaticAberrationLayer = null;
     Bloom bloomLayer = null;
     InputManager inputManager;
