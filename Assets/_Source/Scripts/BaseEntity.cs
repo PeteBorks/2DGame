@@ -11,16 +11,19 @@ public class BaseEntity : MonoBehaviour
 {
     public float health = 100;
     float maxHealth;
+    PlayerController player;
+    EnemyPatrol enemy;
 
     void Awake()
     {
         maxHealth = health;
+        player = gameObject.GetComponent<PlayerController>();
+        enemy = gameObject.GetComponent<EnemyPatrol>();
     }
 
     public void TakeDamage(float damage)
     {
-        PlayerController player = gameObject.GetComponent<PlayerController>();
-        EnemyPatrol enemy = gameObject.GetComponent<EnemyPatrol>();
+        
         if (health > damage)
         {
             health -= damage;
@@ -48,7 +51,7 @@ public class BaseEntity : MonoBehaviour
                     player.wallJumpDelay = 50;
                     player.Detach(false);
                 }
-                StartCoroutine(WaitForLanding(player));
+                StartCoroutine(WaitForLanding());
             }
         }
     }
@@ -58,22 +61,25 @@ public class BaseEntity : MonoBehaviour
         Destroy(gameObject);
     }
 
-    IEnumerator WaitForLanding(PlayerController p)
+    public void ReenablePlayer()
     {
-        yield return new WaitUntil(() => p.isGrounded);
-        p.animator.SetBool("isDead", true);
-        p.inputEnabled = false;
-        gameObject.GetComponent<Collider2D>().enabled = false;
-        gameObject.GetComponent<Rigidbody2D>().simulated = false;
-        p.animator.enabled = false;
-        yield return new WaitForSeconds(3);
-        p.animator.SetBool("isDead", false);
-        
-        p.animator.enabled = true;
-        p.inputEnabled = true;
-        p.wallJumpDelay = 1.5f;
+        player.animator.SetBool("isDead", false);
+        player.animator.enabled = true;
+        player.inputEnabled = true;
+        player.wallJumpDelay = 1.5f;
         gameObject.GetComponent<Collider2D>().enabled = true;
         gameObject.GetComponent<Rigidbody2D>().simulated = true;
+    }
+
+    IEnumerator WaitForLanding()
+    {
+        yield return new WaitUntil(() => player.isGrounded);
+        player.animator.SetBool("isDead", true);
+        player.inputEnabled = false;
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        gameObject.GetComponent<Rigidbody2D>().simulated = false;
+        //player.animator.enabled = false;
+        yield return new WaitForSeconds(2);
         FindObjectOfType<Main>().ResetToCheckpoint();
     }
 

@@ -12,6 +12,9 @@ public class CheckpointComponent : MonoBehaviour
     Animator animator;
     bool on;
     public Transform loadLocation;
+    public float playerHealth;
+    public int collectables;
+    public Color ambientColor;
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -20,13 +23,16 @@ public class CheckpointComponent : MonoBehaviour
     {
         if (collision.GetComponent<PlayerController>() && !on)
         {
-            SaveGame();
+            SaveGame(collision.GetComponent<PlayerController>());
             FindObjectOfType<Main>().currentCheckpoint = this;
         }
     }
 
-    void SaveGame()
+    void SaveGame(PlayerController p)
     {
+        playerHealth = p.health;
+        collectables = p.GetComponent<CollectableManager>().collectables;
+        ambientColor = RenderSettings.ambientLight;
         animator.enabled = true;
         on = true;
         StartCoroutine(RandomGlich());

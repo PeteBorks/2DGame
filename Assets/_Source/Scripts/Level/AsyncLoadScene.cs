@@ -22,6 +22,7 @@ public class AsyncLoadScene : MonoBehaviour
 
 	IEnumerator LoadScene()
 	{
+        FindObjectOfType<Main>().lastOpenedScene = sceneIndexToLoad;
 	    AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndexToLoad, LoadSceneMode.Additive);
 
 	    // Wait until the asynchronous scene fully loads

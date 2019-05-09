@@ -1562,7 +1562,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 270980948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 34.51, y: 0.02, z: -0.8660293}
+  m_LocalPosition: {x: 34.51, y: -0, z: -0.8660293}
   m_LocalScale: {x: 0.83162284, y: 1.1125, z: 1}
   m_Children: []
   m_Father: {fileID: 2074809243}
@@ -1626,7 +1626,7 @@ GameObject:
   m_Component:
   - component: {fileID: 278188653}
   - component: {fileID: 278188654}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BACKGROUND_INTERNO_mini
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1681,8 +1681,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1998126657
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9aed909274bc2f441a270ad57b027c27, type: 3}
   m_Color: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
@@ -54998,8 +54998,8 @@ Light:
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 0.9979913, g: 0, b: 0, a: 1}
-  m_Intensity: 2
-  m_Range: 2
+  m_Intensity: 1.5
+  m_Range: 3
   m_SpotAngle: 98.2
   m_CookieSize: 10
   m_Shadows:
@@ -55829,6 +55829,75 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!1 &1089076011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1089076012}
+  - component: {fileID: 1089076013}
+  m_Layer: 15
+  m_Name: Point Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1089076012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089076011}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.09}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1861709783}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &1089076013
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089076011}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 2
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Intensity: 1.4
+  m_Range: 5
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 65334
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!1 &1103422596
 GameObject:
   m_ObjectHideFlags: 0
@@ -55901,11 +55970,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba0b6991892c734dbc2c8587afa97d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeClock: 2
   buttonActionTargets:
   - name: Door
     buttonTarget: {fileID: 1861709783}
     target: {x: 375.639, y: -44.596, z: 0}
     origin: {x: 375.639, y: -41.488, z: 0}
+    useDifSprite: 1
   transitionDuration: 1
   transitionCurve:
     serializedVersion: 2
@@ -56007,7 +56078,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1166221510}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.09, y: -1.96, z: 43.26458}
+  m_LocalPosition: {x: -1.82, y: -10.97, z: 43.26458}
   m_LocalScale: {x: 1, y: 2.798125, z: 1}
   m_Children: []
   m_Father: {fileID: 626780617}
@@ -60576,7 +60647,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 375.639, y: -41.488, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1089076012}
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -11,6 +11,8 @@ using System.Collections;
 public class ButtonAction : MonoBehaviour
 {
     [SerializeField]
+    float timeClock;
+    [SerializeField]
     ButtonActionTargetInfo[] buttonActionTargets;
     public float transitionDuration = 1;
     
@@ -18,6 +20,8 @@ public class ButtonAction : MonoBehaviour
     public Sprite activated;
     public Sprite targetSprite;
     SpriteRenderer sprite;
+    Sprite defaultSprite;
+    Sprite defaultTargetSprite;
     Light [] l;
 
 
@@ -25,6 +29,8 @@ public class ButtonAction : MonoBehaviour
     {
         sprite = GetComponent<SpriteRenderer>();
         l = GetComponentsInChildren<Light>();
+        defaultSprite = sprite.sprite;
+        defaultTargetSprite = buttonActionTargets[0].buttonTarget.GetComponent<SpriteRenderer>().sprite;
     }
 
     public IEnumerator OnInteract()
@@ -34,8 +40,7 @@ public class ButtonAction : MonoBehaviour
         foreach(Light light in l)
             light.color = Color.green;
         float time = 0;
-        if (targetSprite)
-            buttonActionTargets[0].buttonTarget.GetComponent<SpriteRenderer>().sprite = targetSprite;
+      
         while (time < transitionDuration)
         {
             time += Time.deltaTime;
@@ -46,12 +51,38 @@ public class ButtonAction : MonoBehaviour
                 {
                     buttonActionTargets[i].buttonTarget.GetComponent<SpriteRenderer>().sprite = targetSprite;
                     buttonActionTargets[i].buttonTarget.GetComponentInChildren<Light>().color = Color.green;
-
+                    
                 }
                     
             }
             yield return null;
-        }            
+        }
+        if (timeClock > 0)
+            StartCoroutine(Close());
+    }
+
+    IEnumerator Close()
+    {
+        yield return new WaitForSeconds(timeClock);
+        float time = 0;
+        while(time < transitionDuration)
+        {
+            time += Time.deltaTime;
+            for(int i=0; i<buttonActionTargets.Length;i++)
+            {
+                buttonActionTargets[i].buttonTarget.localPosition = Vector3.Lerp(buttonActionTargets[i].target, buttonActionTargets[i].origin, transitionCurve.Evaluate(time / transitionDuration));
+            }
+            yield return null;
+        }
+        sprite.sprite = defaultSprite;
+        for (int i = 0; i < buttonActionTargets.Length; i++)
+            if (buttonActionTargets[i].useDifSprite)
+            {
+                buttonActionTargets[i].buttonTarget.GetComponent<SpriteRenderer>().sprite = defaultTargetSprite;
+                buttonActionTargets[i].buttonTarget.GetComponentInChildren<Light>().color = Color.red;
+            }
+        foreach (Light light in l)
+            light.color = Color.red;
     }
 
     void OnValidate()

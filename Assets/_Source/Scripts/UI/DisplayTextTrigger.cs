@@ -16,7 +16,9 @@ public class DisplayTextTrigger : MonoBehaviour
 
     private void Start()
     {
-        textReference = FindObjectOfType<TextMeshProUGUI>();
+        foreach (TextMeshProUGUI t in FindObjectsOfType<TextMeshProUGUI>())
+            if (t.transform.parent.gameObject.name == "MessageCanvas")
+                textReference = t;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

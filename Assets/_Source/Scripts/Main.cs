@@ -19,6 +19,8 @@ public class Main : MonoBehaviour
     public MeepController stellar;
     public CurrentPawn currentPawn;
     public CheckpointComponent currentCheckpoint;
+    public LoadingScreen loadingScreen;
+    public int lastOpenedScene;
 
     private void Awake()
     {
@@ -59,8 +61,13 @@ public class Main : MonoBehaviour
 
     public void ResetToCheckpoint()
     {
-        playerPawn.health = 100;
+        loadingScreen.sceneIndex = lastOpenedScene;
+        loadingScreen.gameObject.SetActive(true);
+        loadingScreen.Initialize();
+        playerPawn.health = currentCheckpoint.playerHealth;
+        playerPawn.GetComponent<CollectableManager>().collectables = currentCheckpoint.collectables;
         playerPawn.transform.position = currentCheckpoint.loadLocation.position;
+        RenderSettings.ambientLight = currentCheckpoint.ambientColor;
     }
 
     IEnumerator EnableStellar()
