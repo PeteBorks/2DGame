@@ -20,7 +20,8 @@ public class InvisibleWall : MonoBehaviour
     GameObject[] objectsToToggle;
     [SerializeField]
     GameObject[] objectsToUntoggle;
-
+    [SerializeField]
+    bool usePlayer = true;
     Material materialInstance;
     public bool canDisable;
 
@@ -33,7 +34,7 @@ public class InvisibleWall : MonoBehaviour
 	
 	void OnTriggerEnter2D(Collider2D collision)
 	{
-		if(collision.GetComponent<PlayerController>() || collision.gameObject.CompareTag("Stellar"))
+		if((usePlayer && collision.GetComponent<PlayerController>()) || collision.gameObject.CompareTag("Stellar"))
 		{
 			StartCoroutine(TransitionIn());
 			
@@ -42,7 +43,7 @@ public class InvisibleWall : MonoBehaviour
 	}
     void OnTriggerExit2D(Collider2D collision)
 	{
-		if((collision.GetComponent<PlayerController>() || collision.gameObject.CompareTag("Stellar")))
+		if(((usePlayer && collision.GetComponent<PlayerController>()) || collision.gameObject.CompareTag("Stellar")))
 		{
 			StartCoroutine(TransitionOut());
 			

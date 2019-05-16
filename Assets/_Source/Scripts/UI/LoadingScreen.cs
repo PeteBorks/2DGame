@@ -20,20 +20,17 @@ public class LoadingScreen : MonoBehaviour
         StartCoroutine(LoadScreen());
     }
 
+    public void InitializeInitial()
+    {
+        slider = GetComponentInChildren<Slider>();
+        StartCoroutine(LoadInitial());
+    }
+
     IEnumerator LoadScreen()
     {
-        if (SceneManager.GetSceneByBuildIndex(sceneIndex).isLoaded)
-        {
-            sceneIndex = sceneIndex;
-        }
-        else if (SceneManager.GetSceneByBuildIndex(sceneIndex - 1).isLoaded && sceneIndex - 1 != SceneManager.GetSceneByName("Main").buildIndex)
-            sceneIndex -= 1;
-        else
-        {
-            Debug.LogWarning("No scene to unload");
-            yield return null;
-        }
-        SceneManager.UnloadSceneAsync(sceneIndex);
+        
+        if(SceneManager.GetSceneByBuildIndex(sceneIndex).isLoaded)
+            SceneManager.UnloadSceneAsync(sceneIndex);
         yield return new WaitForSeconds(0.2f);
         async = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
         async.allowSceneActivation = false;
@@ -48,7 +45,42 @@ public class LoadingScreen : MonoBehaviour
             yield return null;
         }
         gameObject.SetActive(false);
-        FindObjectOfType<PlayerController>().ReenablePlayer();
+        if(FindObjectOfType<PlayerController>())
+            FindObjectOfType<PlayerController>().ReenablePlayer();
+        slider.value = 0;
+        async = null;
+    }
+
+    IEnumerator LoadInitial()
+    {
+        bool a = false;
+        async = SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);
+        async.allowSceneActivation = false;
+        while(async.isDone == false)
+        {
+            slider.value = async.progress;
+            if(async.progress == 0.9f)
+            {
+                slider.value = 1;
+                if (!a)
+                {
+                    async.allowSceneActivation = true;
+                    async = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+                    a = true;
+                }
+                else
+                {
+                    async.allowSceneActivation = true;
+                }                   
+            }
+            yield return null;
+        }
+        async = SceneManager.UnloadSceneAsync(0);
+        while (async.isDone == false)
+        {
+            yield return null;
+        }
+        gameObject.SetActive(false);
         slider.value = 0;
         async = null;
     }
