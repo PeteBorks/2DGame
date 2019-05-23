@@ -6,6 +6,7 @@
 
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Tilemaps;
 
 [SelectionBase]
 public class ButtonAction : MonoBehaviour
@@ -32,7 +33,37 @@ public class ButtonAction : MonoBehaviour
         defaultSprite = sprite.sprite;
         defaultTargetSprite = buttonActionTargets[0].buttonTarget.GetComponent<SpriteRenderer>().sprite;
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<TilemapRenderer>())
+            OnStellarInteract();
+    }
 
+    IEnumerator OnStellarInteract()
+    {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        sprite.color = Color.green;
+        foreach (Light light in l)
+            light.color = Color.green;
+        float time = 0;
+
+        while (time < transitionDuration)
+        {
+            time += Time.deltaTime;
+            for (int i = 0; i < buttonActionTargets.Length; i++)
+            {
+                buttonActionTargets[i].buttonTarget.localPosition = Vector3.Lerp(buttonActionTargets[i].origin, buttonActionTargets[i].target, transitionCurve.Evaluate(time / transitionDuration));
+                if (buttonActionTargets[i].useDifSprite)
+                {
+                    buttonActionTargets[i].buttonTarget.GetComponent<SpriteRenderer>().sprite = targetSprite;
+                    buttonActionTargets[i].buttonTarget.GetComponentInChildren<Light>().color = Color.green;
+
+                }
+
+            }
+            yield return null;
+        }
+    }
     public IEnumerator OnInteract()
     {
         if(activated)

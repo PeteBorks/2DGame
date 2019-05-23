@@ -17,7 +17,7 @@ public class DirectorTrigger : MonoBehaviour
     }
 
     GameObject triggeringGameObject;
-    public GetPlayerRef main;
+    Main main;
     public PlayableDirector director;
     public TriggerType triggerType;
     public UnityEvent OnDirectorPlay;
@@ -25,9 +25,13 @@ public class DirectorTrigger : MonoBehaviour
     [HideInInspector]
     protected bool alreadyTriggered;
 
+    private void Start()
+    {
+        main = FindObjectOfType<Main>();
+    }
     void OnTriggerEnter2D(Collider2D other)
     {
-        triggeringGameObject = main.player.gameObject;
+        triggeringGameObject = main.playerPawn.gameObject;
         if (other.gameObject != triggeringGameObject)
             return;
 

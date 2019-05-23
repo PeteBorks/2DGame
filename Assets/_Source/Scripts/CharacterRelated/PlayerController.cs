@@ -175,22 +175,24 @@ public class PlayerController : BaseEntity
             target.transform.GetChild(0).gameObject.SetActive(false);
 
         if (inputEnabled && inputManager.dash)
-            if (animator.GetBool("isOnAir") && canDash)
+            if (animator.GetBool("isOnAir") && !animator.GetBool("isGrabbing") && canDash)
                 StartCoroutine("Dash");
             else if (isGrounded && canSlide)
                 StartCoroutine("Slide");
 
         if ((inputEnabled || (animator.GetBool("isSliding") && !ceilingCheck || isRotSliding)) && inputManager.jump && (isGrounded || animator.GetBool("isGrabbing")))
         {
-            if(isGrounded && !isSliding && !isRotSliding)
+            AudioManager.instance.PlaySound("shouts", transform.position, 0.2f, 0.98f);
+            if (isGrounded && !isSliding && !isRotSliding)
             {
                 StartCoroutine(Jump());
                 animator.SetTrigger("jump");
+
             }
             else
             {
-                animator.SetBool("isOnAir", true);
-                jump = true;
+                AudioManager.instance.PlaySound("jumponwall", transform.position, 0.4f);
+                StartCoroutine(Jump());
             }
                 
             inputEnabled = true;
@@ -237,7 +239,7 @@ public class PlayerController : BaseEntity
         if (inputEnabled && inputManager.fire && !animator.GetBool("isGrabbing"))
         {
             if(meleeCheck && !animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Melee") && isGrounded)
-            {
+            { 
                 target.GetComponent<EnemyPatrol>().MeleeDeath();
                 Instantiate(meleeFX, barrelFXSocket.transform);
                 movement = Vector2.zero;
@@ -322,6 +324,7 @@ public class PlayerController : BaseEntity
         {
             if (rightSideCheck && !justJumpR)
             {
+                AudioManager.instance.PlaySound("walljump", transform.position, 0.4f);
                 if (isDashing)
                     StartCoroutine(StopDashing());
                 animator.SetBool("isFiring", false);
@@ -333,6 +336,7 @@ public class PlayerController : BaseEntity
             }     
             if (leftSideCheck && !justJumpL)
             {
+                AudioManager.instance.PlaySound("walljump", transform.position, 0.4f);
                 if (isDashing)
                     StartCoroutine(StopDashing());
                 animator.SetBool("isFiring", false);
@@ -421,6 +425,8 @@ public class PlayerController : BaseEntity
 
     public void Hit()
     {
+        AudioManager.instance.PlaySound("hit", transform.position, 0.2f);
+        GetComponent<VignetteFeedback>().Hit();
             if(movement.x == 0)
                 animator.SetTrigger("hit");
     }
@@ -471,12 +477,13 @@ public class PlayerController : BaseEntity
 
     IEnumerator WaitMelee()
     {
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 0.2f);
-        inputEnabled = true;
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.87f);
+            inputEnabled = true;
     }
     IEnumerator FireDelay()
     {
         animator.SetBool("isFiring", true);
+        AudioManager.instance.PlaySound("carriefire", transform.position, 0.5f);
         chromaticAberrationLayer.intensity.value = 0.45f;
         bloomLayer.intensity.value = 7;
         camNoise.m_AmplitudeGain = cameraShakeAmplitude;
@@ -495,6 +502,7 @@ public class PlayerController : BaseEntity
 
     IEnumerator Jump()
     {
+        
         yield return new WaitForSeconds(jumpDelay/2);
         jump = true;
         yield return new WaitForSeconds(jumpDelay / 2);
@@ -502,6 +510,7 @@ public class PlayerController : BaseEntity
     }
     IEnumerator Dash()
     {
+        AudioManager.instance.PlaySound("dash", transform.position, 0.4f);
         chromaticAberrationLayer.intensity.value = 0.45f;
         isDashing = true;
         inputEnabled = false;
@@ -547,8 +556,8 @@ public class PlayerController : BaseEntity
         inputEnabled = false;
         animator.SetBool("isSliding", true);
         collider2d.direction = CapsuleDirection2D.Horizontal;
-        collider2d.offset = new Vector2(0, 0.55f);
-        collider2d.size = new Vector2(1f, 1.1f);
+        collider2d.offset = new Vector2(0, 0.5f);
+        collider2d.size = new Vector2(1f, 1f);
         
         if (isFacingRight)
             movement = new Vector2(speed, rb2D.velocity.y);

@@ -25,6 +25,7 @@ public class CheckpointComponent : MonoBehaviour
         {
             SaveGame(collision.GetComponent<PlayerController>());
             FindObjectOfType<Main>().currentCheckpoint = this;
+            AudioManager.instance.PlaySound("checkpoint", transform.position, 0.5f);
         }
     }
 
@@ -44,4 +45,11 @@ public class CheckpointComponent : MonoBehaviour
         animator.SetTrigger("loop");
         StartCoroutine(RandomGlich());
     }
+
+    public void StartSound()
+    {
+        GetComponentInChildren<AudioSource>().enabled = true;
+    }
+
+
 }

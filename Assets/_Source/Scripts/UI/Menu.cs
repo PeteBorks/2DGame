@@ -94,17 +94,17 @@ public class Menu : MonoBehaviour {
 
     public void SetMasterVolume(float value)
     {
-        //AudioManager.instance.SetVolume (value, AudioManager.AudioChannel.Master);
+        AudioManager.instance.SetVolume (value, AudioManager.AudioChannel.Master);
     }
 
     public void SetMusicVolume(float value)
     {
-        //AudioManager.instance.SetVolume (value, AudioManager.AudioChannel.Music);
+        AudioManager.instance.SetVolume (value, AudioManager.AudioChannel.Music);
     }
 
     public void SetSfxVolume(float value)
     {
-        //AudioManager.instance.SetVolume (value, AudioManager.AudioChannel.Sfx);
+        AudioManager.instance.SetVolume (value, AudioManager.AudioChannel.Sfx);
     }
 
 

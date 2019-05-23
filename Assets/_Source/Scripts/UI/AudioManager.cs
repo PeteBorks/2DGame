@@ -44,28 +44,28 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    //public void SetVolume (float volumePercent, AudioChannel)
-    //{
-    //    switch (channel)
-    //   {
-    //       case AudioChannel.Master:
-    //            masterVolumePercent = volumePercent;
-    //            break;
-    //        case AudioChannel.Sfx:
-    //           sfxVolumePercent = volumePercent;
-    //            break;
-    //        case AudioChannel.Music:
-    //            musicVolumePercent = volumePercent;
-    //            break;
-    //    }
+    public void SetVolume(float volumePercent, AudioChannel channel)
+    {
+        switch (channel)
+       {
+           case AudioChannel.Master:
+                masterVolumePercent = volumePercent;
+                break;
+            case AudioChannel.Sfx:
+               sfxVolumePercent = volumePercent;
+                break;
+            case AudioChannel.Music:
+                musicVolumePercent = volumePercent;
+                break;
+        }
 
-    //    musicSources[0].volume = musicVolumePercent * masterVolumePercent;
-    //    musicSources[1].volume = musicVolumePercent * masterVolumePercent;
+        musicSources[0].volume = musicVolumePercent * masterVolumePercent;
+        musicSources[1].volume = musicVolumePercent * masterVolumePercent;
 
-    //    PlayerPrefs.SetFloat("Master vol", masterVolumePercent);
-    //    PlayerPrefs.SetFloat("Music vol", musicVolumePercent);
-    //    PlayerPrefs.SetFloat("Sfx vol", sfxVolumePercent);
-    //}
+        PlayerPrefs.SetFloat("Master vol", masterVolumePercent);
+        PlayerPrefs.SetFloat("Music vol", musicVolumePercent);
+        PlayerPrefs.SetFloat("Sfx vol", sfxVolumePercent);
+    }
 
     public void PlayMusic(AudioClip clip, float fadeDuration = 1)
     {
@@ -73,25 +73,66 @@ public class AudioManager : MonoBehaviour
         musicSources[activeMusicSourceIndex].clip = clip;
         musicSources[activeMusicSourceIndex].Play();
 
-        //StartCoroutine(AnimateMusicCrossfade(fadeDuration));
+        StartCoroutine(AnimateMusicCrossfade(fadeDuration));
     }
 
 
-    public void PlaySound(AudioClip clip, Vector3 pos)
+    public AudioSource PlaySound(AudioClip clip, Vector3 pos, float volume)
     {
         if (clip != null)
         {
-            AudioSource.PlayClipAtPoint(clip, pos, sfxVolumePercent * masterVolumePercent);
+            return PlayClipAt(clip, pos, sfxVolumePercent * masterVolumePercent * volume);
         }
+        return null;
+
         
     }
-
-    public void PlaySound (string soundName, Vector3 pos)
+    public AudioSource PlaySound2D(AudioClip clip, Vector3 pos, float volume)
     {
-        PlaySound(library.GetClipFromName(soundName), pos);
+        if (clip != null)
+        {
+            return PlayClip2D(clip, pos, sfxVolumePercent * masterVolumePercent * volume);
+        }
+        return null;
+
+
+    }
+    public void PlaySound(AudioClip clip, Vector3 pos, float volume, float pitch)
+    {
+        if (clip != null)
+        {
+            AudioSource c = PlayClipAt(clip, pos, sfxVolumePercent * masterVolumePercent * volume);
+            c.pitch = pitch;
+        }
+
+
     }
 
-    IEnumerable AnimateMusicCrossfade (float duration)
+    public void PlaySound (string soundName, Vector3 pos, float volume)
+    {
+        AudioClip s = library.GetClipFromName(soundName);
+        if (!s)
+        {
+            Debug.LogWarning("Sound " + soundName + " not found on SoundLibrary");
+            return;
+        }
+        else
+            PlaySound(s, pos, volume);
+    }
+
+    public void PlaySound(string soundName, Vector3 pos, float volume, float pitch)
+    {
+        AudioClip s = library.GetClipFromName(soundName);
+        if (!s)
+        {
+            Debug.LogWarning("Sound " + soundName + " not found on SoundLibrary");
+            return;
+        }
+        else
+            PlaySound(s, pos, volume, pitch);
+    }
+
+    IEnumerator AnimateMusicCrossfade (float duration)
     {
         float percent = 0;
 
@@ -102,5 +143,36 @@ public class AudioManager : MonoBehaviour
             musicSources[1 - activeMusicSourceIndex].volume = Mathf.Lerp(musicVolumePercent * masterVolumePercent, 0, percent);
             yield return null;
         }
+    }
+    AudioSource PlayClipAt(AudioClip clip, Vector3 pos, float volume)
+    {
+        GameObject tempGO = new GameObject("TempAudio"); // create the temp object
+        tempGO.transform.position = pos; // set its position
+        AudioSource aSource = tempGO.AddComponent<AudioSource>(); // add an audio source
+        aSource.clip = clip; // define the clip
+        aSource.volume = volume;
+        aSource.minDistance = 9;
+        aSource.maxDistance = 18f;
+        aSource.spatialBlend = 1;
+                             // set other aSource properties here, if desired
+        aSource.Play(); // start the sound
+        Destroy(tempGO, clip.length); // destroy object after clip duration
+        return aSource; // return the AudioSource reference
+    }
+
+    AudioSource PlayClip2D(AudioClip clip, Vector3 pos, float volume)
+    {
+        GameObject tempGO = new GameObject("TempAudio"); // create the temp object
+        tempGO.transform.position = pos; // set its position
+        AudioSource aSource = tempGO.AddComponent<AudioSource>(); // add an audio source
+        aSource.clip = clip; // define the clip
+        aSource.volume = volume;
+        aSource.minDistance = 9;
+        aSource.maxDistance = 18f;
+        aSource.spatialBlend = 0;
+        // set other aSource properties here, if desired
+        aSource.Play(); // start the sound
+        Destroy(tempGO, clip.length); // destroy object after clip duration
+        return aSource; // return the AudioSource reference
     }
 }

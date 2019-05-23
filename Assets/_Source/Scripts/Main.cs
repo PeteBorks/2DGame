@@ -6,6 +6,7 @@
 
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Main : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class Main : MonoBehaviour
     public CheckpointComponent currentCheckpoint;
     public LoadingScreen loadingScreen;
     public int lastOpenedScene;
+    public Slider healthSlider; 
+    
 
     private void Awake()
     {
@@ -28,6 +31,10 @@ public class Main : MonoBehaviour
         playerPawn = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
 
+    void Update()
+    {
+        healthSlider.value = playerPawn.health;
+    }
     public void DisableInput()
     {
         playerPawn.inputEnabled = false;

@@ -33,7 +33,11 @@ public class LifeStation : MonoBehaviour
         PlayerController player = collision.GetComponent<PlayerController>();
         if (mesh.enabled && player && player.health < 100)
         {
-            player.health += 50;
+            if (player.health > 50)
+                player.health = 100;
+            else
+                player.health += 50;
+            player.GetComponent<VignetteFeedback>().Life();
             particle1.Stop();
             ParticleSystem.MainModule main = particle1.main;
             main.simulationSpeed = 3.5f;

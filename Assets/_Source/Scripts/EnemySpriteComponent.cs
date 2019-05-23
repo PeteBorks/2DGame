@@ -18,5 +18,6 @@ public class EnemySpriteComponent : MonoBehaviour
     public void Fire()
     {
         mainScript.Fire();
+        AudioManager.instance.PlaySound("enemyfire", transform.position, 0.7f);
     }
 }
