@@ -29,7 +29,7 @@ public class BaseEntity : MonoBehaviour
             health -= damage;
             if (enemy)
                 enemy.DamageFeedback(true);
-            if (player)
+            if (player && !player.cheat)
                 player.Hit();
         }
         else
@@ -81,6 +81,7 @@ public class BaseEntity : MonoBehaviour
         //player.animator.enabled = false;
         yield return new WaitForSeconds(2);
         FindObjectOfType<Main>().ResetToCheckpoint();
+        player.GetComponent<VignetteFeedback>().StartCoroutine(player.GetComponent<VignetteFeedback>().FadeVignette());
     }
 
 }

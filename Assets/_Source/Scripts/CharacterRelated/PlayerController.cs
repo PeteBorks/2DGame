@@ -72,6 +72,8 @@ public class PlayerController : BaseEntity
     GameObject meleeFX;
     [SerializeField]
     ParticleSystem dashParticle;
+    [SerializeField]
+    GameObject cheatText;
 
     ChromaticAberration chromaticAberrationLayer = null;
     Bloom bloomLayer = null;
@@ -82,7 +84,9 @@ public class PlayerController : BaseEntity
     public bool inputEnabled = true;
     bool canSlide = true;
     bool canDash = true;
-    
+
+    [HideInInspector]
+    public bool canControlStellar;
     public bool isFacingRight = true;
     [HideInInspector]
     public bool isGrounded = true;
@@ -99,6 +103,7 @@ public class PlayerController : BaseEntity
     bool jump;
     bool isOnTrigger = false;
     bool isRotSliding;
+    public bool cheat;
 
     ParticleSystem activatedParticle;
     GameObject interactableObject;
@@ -112,7 +117,8 @@ public class PlayerController : BaseEntity
     Vector3 barrelFXJumpingPos;
     GameObject target;
     Main mainScript;
-    
+
+    AudioSource source;
     public Vector2 movement;
     RaycastHit2D groundHit;
     RaycastHit2D meleeCheck;
@@ -157,6 +163,23 @@ public class PlayerController : BaseEntity
 
     void Update()
     {
+        // cheat
+        if(inputEnabled && Input.GetButtonDown("Cheat"))
+        {
+            if(!cheat)
+            {
+                cheat = true;
+                health = 999;
+                cheatText.SetActive(true);
+            }
+            else
+            {
+                cheat = false;
+                health = 100;
+                cheatText.SetActive(false);
+            }
+        }
+
         wasGrounded = isGrounded;
         isGrounded = ((Physics2D.Raycast(transform.position + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold)) == 1 ||
                       (Physics2D.Raycast(transform.position + transform.right * 0.4f + -transform.up * 0.1f, -transform.up, filter, results, jumpThreshold) == 1) ||
@@ -164,15 +187,24 @@ public class PlayerController : BaseEntity
         ceilingCheck = collider2d.Raycast(Vector2.up, filter, results, collider2d.bounds.extents.y + collider2d.bounds.extents.y) == 1;
         rightSideCheck = collider2d.Raycast(Vector2.right, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
         leftSideCheck = collider2d.Raycast(Vector2.left, jumpFilter, results, collider2d.bounds.extents.x + 0.1f) == 1;
-        meleeCheck = Physics2D.Raycast(transform.position + Vector3.up + Vector3.left * 1.25f, transform.right, 2.5f, LayerMask.GetMask("Enemy"));
+        meleeCheck = Physics2D.Raycast(transform.position + Vector3.up + Vector3.left * 1.2f, transform.right, 2.5f, LayerMask.GetMask("Enemy"));
 
+        if (rb2D.velocity.y < 0)
+            rb2D.velocity += Vector2.up * Physics.gravity.y * (1.3f - 1) * Time.deltaTime;
+        //else if(rb2D.velocity.y > 0 && !Input.GetButton ("Jump" ))
+        //    rb2D.velocity += Vector2.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         if (meleeCheck)
         {
             target = meleeCheck.collider.gameObject;
-            target.transform.GetChild(0).gameObject.SetActive(true);
+            if(target.GetComponent<EnemyPatrol>())
+                target.transform.GetChild(0).gameObject.SetActive(true);
         }
         else if(target)
-            target.transform.GetChild(0).gameObject.SetActive(false);
+        {
+            if (target.GetComponent<EnemyPatrol>())
+                target.transform.GetChild(0).gameObject.SetActive(false);
+        }
+            
 
         if (inputEnabled && inputManager.dash)
             if (animator.GetBool("isOnAir") && !animator.GetBool("isGrabbing") && canDash)
@@ -182,16 +214,17 @@ public class PlayerController : BaseEntity
 
         if ((inputEnabled || (animator.GetBool("isSliding") && !ceilingCheck || isRotSliding)) && inputManager.jump && (isGrounded || animator.GetBool("isGrabbing")))
         {
-            AudioManager.instance.PlaySound("shouts", transform.position, 0.2f, 0.98f);
+            
             if (isGrounded && !isSliding && !isRotSliding)
             {
+                AudioManager.instance.PlaySound("shouts", transform.position, 0.4f, 0.98f);
                 StartCoroutine(Jump());
                 animator.SetTrigger("jump");
 
             }
             else
             {
-                AudioManager.instance.PlaySound("jumponwall", transform.position, 0.4f);
+                AudioManager.instance.PlaySound("jumponwall", transform.position, 0.5f);
                 StartCoroutine(Jump());
             }
                 
@@ -238,7 +271,7 @@ public class PlayerController : BaseEntity
 
         if (inputEnabled && inputManager.fire && !animator.GetBool("isGrabbing"))
         {
-            if(meleeCheck && !animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Melee") && isGrounded)
+            if(meleeCheck && !animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Melee") && isGrounded && target.GetComponent<EnemyPatrol>())
             { 
                 target.GetComponent<EnemyPatrol>().MeleeDeath();
                 Instantiate(meleeFX, barrelFXSocket.transform);
@@ -280,12 +313,12 @@ public class PlayerController : BaseEntity
             StartCoroutine(StopDashing());
         }
 
-        if (inputEnabled && inputManager.changePawn && ((movement.x < 0.1f && movement.x > -0.1f && isGrounded) || animator.GetBool("isGrabbing")))
+        if ( canControlStellar && inputEnabled && inputManager.changePawn && ((movement.x < 0.1f && movement.x > -0.1f && isGrounded) || animator.GetBool("isGrabbing")))
         {
             mainScript.ChangePawn(2);
         }
 
-        if (inputEnabled && inputManager.interact && isOnTrigger)
+        if (inputEnabled && inputManager.interact && isOnTrigger && interactableObject.GetComponent<ButtonAction>())
         {
             StartCoroutine(interactableObject.GetComponent<ButtonAction>().OnInteract());
         }
@@ -324,7 +357,7 @@ public class PlayerController : BaseEntity
         {
             if (rightSideCheck && !justJumpR)
             {
-                AudioManager.instance.PlaySound("walljump", transform.position, 0.4f);
+                AudioManager.instance.PlaySound("walljump", transform.position, 0.6f);
                 if (isDashing)
                     StartCoroutine(StopDashing());
                 animator.SetBool("isFiring", false);
@@ -336,7 +369,7 @@ public class PlayerController : BaseEntity
             }     
             if (leftSideCheck && !justJumpL)
             {
-                AudioManager.instance.PlaySound("walljump", transform.position, 0.4f);
+                AudioManager.instance.PlaySound("walljump", transform.position, 0.6f);
                 if (isDashing)
                     StartCoroutine(StopDashing());
                 animator.SetBool("isFiring", false);
@@ -425,7 +458,7 @@ public class PlayerController : BaseEntity
 
     public void Hit()
     {
-        AudioManager.instance.PlaySound("hit", transform.position, 0.2f);
+        AudioManager.instance.PlaySound("hit", transform.position, 0.45f);
         GetComponent<VignetteFeedback>().Hit();
             if(movement.x == 0)
                 animator.SetTrigger("hit");
@@ -483,7 +516,7 @@ public class PlayerController : BaseEntity
     IEnumerator FireDelay()
     {
         animator.SetBool("isFiring", true);
-        AudioManager.instance.PlaySound("carriefire", transform.position, 0.5f);
+        AudioManager.instance.PlaySound("carriefire", transform.position, 0.45f);
         chromaticAberrationLayer.intensity.value = 0.45f;
         bloomLayer.intensity.value = 7;
         camNoise.m_AmplitudeGain = cameraShakeAmplitude;
@@ -510,7 +543,7 @@ public class PlayerController : BaseEntity
     }
     IEnumerator Dash()
     {
-        AudioManager.instance.PlaySound("dash", transform.position, 0.4f);
+        AudioManager.instance.PlaySound("dash", transform.position, 0.33f);
         chromaticAberrationLayer.intensity.value = 0.45f;
         isDashing = true;
         inputEnabled = false;
@@ -550,6 +583,8 @@ public class PlayerController : BaseEntity
     //TODO check hardcoded values
     IEnumerator Slide()
     {
+        source = AudioManager.instance.PlaySoundLoop("slide", transform.position, 0.4f, 0.75f);
+        source.loop = true;
         speed *= slideSpeedModifier;
         canSlide = false;
         isSliding = true;
@@ -572,6 +607,8 @@ public class PlayerController : BaseEntity
     }
     IEnumerator StopSliding()
     {
+        if (source)
+            Destroy(source.gameObject);
         speed = normalSpeed;
         movement = Vector2.zero; 
         StopCoroutine("Slide");

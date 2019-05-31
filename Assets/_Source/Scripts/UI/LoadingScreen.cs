@@ -33,20 +33,24 @@ public class LoadingScreen : MonoBehaviour
             SceneManager.UnloadSceneAsync(sceneIndex);
         yield return new WaitForSeconds(0.2f);
         async = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
-        async.allowSceneActivation = false;
+        //async.allowSceneActivation = true;
+        
         while(async.isDone == false)
         {
             slider.value = async.progress;
             if (async.progress == 0.9f)
             {
                 slider.value = 1;
-                async.allowSceneActivation = true;
+                
             }
             yield return null;
         }
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneIndex));
         gameObject.SetActive(false);
         if(FindObjectOfType<PlayerController>())
             FindObjectOfType<PlayerController>().ReenablePlayer();
+        if (FindObjectOfType<MeepController>())
+            FindObjectOfType<MeepController>().EnableFollowing();
         slider.value = 0;
         async = null;
     }
@@ -80,6 +84,7 @@ public class LoadingScreen : MonoBehaviour
         {
             yield return null;
         }
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
         gameObject.SetActive(false);
         slider.value = 0;
         async = null;

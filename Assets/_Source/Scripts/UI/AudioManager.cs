@@ -70,12 +70,17 @@ public class AudioManager : MonoBehaviour
     public void PlayMusic(AudioClip clip, float fadeDuration = 1)
     {
         activeMusicSourceIndex = 1 - activeMusicSourceIndex;
+        if (!clip) return;
         musicSources[activeMusicSourceIndex].clip = clip;
         musicSources[activeMusicSourceIndex].Play();
 
         StartCoroutine(AnimateMusicCrossfade(fadeDuration));
     }
 
+    public void StopMusic()
+    {
+        musicSources[activeMusicSourceIndex].Stop();
+    }
 
     public AudioSource PlaySound(AudioClip clip, Vector3 pos, float volume)
     {
@@ -97,13 +102,15 @@ public class AudioManager : MonoBehaviour
 
 
     }
-    public void PlaySound(AudioClip clip, Vector3 pos, float volume, float pitch)
+    public AudioSource PlaySound(AudioClip clip, Vector3 pos, float volume, float pitch)
     {
         if (clip != null)
         {
             AudioSource c = PlayClipAt(clip, pos, sfxVolumePercent * masterVolumePercent * volume);
             c.pitch = pitch;
+            return c;
         }
+        return null;
 
 
     }
@@ -120,19 +127,32 @@ public class AudioManager : MonoBehaviour
             PlaySound(s, pos, volume);
     }
 
-    public void PlaySound(string soundName, Vector3 pos, float volume, float pitch)
+    public AudioSource PlaySound(string soundName, Vector3 pos, float volume, float pitch)
     {
         AudioClip s = library.GetClipFromName(soundName);
         if (!s)
         {
             Debug.LogWarning("Sound " + soundName + " not found on SoundLibrary");
-            return;
+            return null;
         }
         else
-            PlaySound(s, pos, volume, pitch);
+           return PlaySound(s, pos, volume, pitch);
     }
 
-    IEnumerator AnimateMusicCrossfade (float duration)
+    public AudioSource PlaySoundLoop(string soundName, Vector3 pos, float volume, float pitch)
+    {
+        AudioClip clip = library.GetClipFromName(soundName);
+        if (clip != null)
+        {
+            AudioSource c = PlayClipAtLoop(clip, pos, sfxVolumePercent * masterVolumePercent * volume);
+            c.pitch = pitch;
+            return c;
+        }
+        return null;
+        }
+
+
+        IEnumerator AnimateMusicCrossfade (float duration)
     {
         float percent = 0;
 
@@ -157,6 +177,23 @@ public class AudioManager : MonoBehaviour
                              // set other aSource properties here, if desired
         aSource.Play(); // start the sound
         Destroy(tempGO, clip.length); // destroy object after clip duration
+        return aSource; // return the AudioSource reference
+    }
+
+    AudioSource PlayClipAtLoop(AudioClip clip, Vector3 pos, float volume)
+    {
+        GameObject tempGO = new GameObject("TempAudio"); // create the temp object
+        tempGO.transform.position = pos; // set its position
+        AudioSource aSource = tempGO.AddComponent<AudioSource>(); // add an audio source
+        aSource.clip = clip; // define the clip
+        aSource.volume = volume;
+        aSource.loop = true;
+        aSource.minDistance = 9;
+        aSource.maxDistance = 18f;
+        aSource.spatialBlend = 1;
+        // set other aSource properties here, if desired
+        aSource.Play(); // start the sound
+        //Destroy(tempGO, clip.length); // destroy object after clip duration
         return aSource; // return the AudioSource reference
     }
 

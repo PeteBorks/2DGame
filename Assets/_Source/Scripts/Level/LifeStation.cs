@@ -31,8 +31,9 @@ public class LifeStation : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         PlayerController player = collision.GetComponent<PlayerController>();
-        if (mesh.enabled && player && player.health < 100)
+        if (mesh.gameObject.activeSelf && player && player.health < 100)
         {
+            AudioManager.instance.PlaySound("pickup", transform.position, 0.4f);
             if (player.health > 50)
                 player.health = 100;
             else

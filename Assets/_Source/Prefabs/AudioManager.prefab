@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3382003706672221261
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3382003706672221262}
+  - component: {fileID: 3382003706672221263}
+  - component: {fileID: 3382003706672221260}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3382003706672221262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382003706672221261}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 433.88907, y: -6.35725, z: 0.86092615}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3382003706672221263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382003706672221261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdf541b01857de9488e1ea943d010a63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3382003706672221260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382003706672221261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4dca6c1b03cc8b4385eb58a873a9b02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundGroups:
+  - groudID: footstep
+    group:
+    - {fileID: 8300000, guid: d9a50401294cf994db997588f91d42e3, type: 3}
+    - {fileID: 8300000, guid: d6ebde4a3ada7fb4cb40b4aee74b36d5, type: 3}
+    - {fileID: 8300000, guid: 0b287ec04efddae49a2dc3b04bf01485, type: 3}
+    - {fileID: 8300000, guid: 9be71da04af2bc54f86d0d71e776b4f6, type: 3}
+    - {fileID: 8300000, guid: a02e47b49f3156e40ada3797f5a7a5b7, type: 3}
+    - {fileID: 8300000, guid: 6544c41040573c14bb7b76beab3138f9, type: 3}
+    - {fileID: 8300000, guid: fe6f746272be5e34f90fdd09718d3782, type: 3}
+    - {fileID: 8300000, guid: 02d3537f01013d24284d147c8980b37a, type: 3}
+  - groudID: checkpoint
+    group:
+    - {fileID: 8300000, guid: db1e01b379ac244438f8e208e91b444f, type: 3}
+  - groudID: enemyfire
+    group:
+    - {fileID: 8300000, guid: 09f697d650ee2c041af805707fb22905, type: 3}
+  - groudID: carriefire
+    group:
+    - {fileID: 8300000, guid: 69c3cd29165150844ab9e0fe984d9dde, type: 3}
+  - groudID: crack
+    group:
+    - {fileID: 8300000, guid: 9cff5612762774641913fccd14f5bc84, type: 3}
+  - groudID: shouts
+    group:
+    - {fileID: 8300000, guid: 0561e01a687e0ce49857137b827e9a65, type: 3}
+    - {fileID: 8300000, guid: 1540a8b1d20add94c9563bb9b6c402e7, type: 3}
+    - {fileID: 8300000, guid: f3c33117e9099184eaba0773f1b3f6f3, type: 3}
+  - groudID: hit
+    group:
+    - {fileID: 8300000, guid: 1368832debad4ac4c9f2c4011f669104, type: 3}
+  - groudID: dash
+    group:
+    - {fileID: 8300000, guid: b3ab74f5bcd462c41bfc2ab72a7e95ed, type: 3}
+  - groudID: walljump
+    group:
+    - {fileID: 8300000, guid: 8048a192950d95a4da753ddcefdc1f4f, type: 3}
+    - {fileID: 8300000, guid: d3807a61e09908f4a9e6c293355782dc, type: 3}
+    - {fileID: 8300000, guid: 6d3547b2374820d4bb40738d6f59c230, type: 3}
+  - groudID: jumponwall
+    group:
+    - {fileID: 8300000, guid: 1caedf6ed3081ad49a9daf96d8f29e24, type: 3}
+  - groudID: slide
+    group:
+    - {fileID: 8300000, guid: 03f8bcf696d90704797b9958f820c19d, type: 3}
+  - groudID: impact
+    group:
+    - {fileID: 8300000, guid: 5c476467e0ec666479d32cb122037ec8, type: 3}
+    - {fileID: 8300000, guid: 1caedf6ed3081ad49a9daf96d8f29e24, type: 3}
+  - groudID: pickup
+    group:
+    - {fileID: 8300000, guid: 231c92f47c1362440b9a404991a1ae1a, type: 3}

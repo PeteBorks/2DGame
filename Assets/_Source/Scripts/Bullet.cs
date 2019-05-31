@@ -55,6 +55,10 @@ public class Bullet : MonoBehaviour
             {
                 collision.GetComponent<BaseEntity>().TakeDamage(damage);
             }
+            if(collision.GetComponent<Zorg>())
+            {
+                collision.GetComponent<Zorg>().TakeDamage(damage);
+            }
             Destroy(gameObject);
         }
         

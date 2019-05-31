@@ -7,22 +7,28 @@ public class MeepController : MonoBehaviour
     {
         Auto,
         Controlled,
-        Platform
+        Platform,
+        Rage
     }
 
-    [Header("Movement")]
+    [Header("Parameters")]
     [Range(0, 10)]
     public float speed = 5f;
     [SerializeField]
     float distanceLimit = 15;
     [SerializeField]
     float distanceToReset = 10;
+    public bool canPlatform;
     [Header("References")]
     public GameObject mainCam;
     public GameObject closeCam;
     public Main mainScript;
     [SerializeField]
+    AudioClip [] sounds;
+    [SerializeField]
     SpriteRenderer sprite;
+    [SerializeField]
+    Sprite rageSprite;
 
     [HideInInspector]
     public GameObject defaultCam;
@@ -34,6 +40,7 @@ public class MeepController : MonoBehaviour
     public bool inputEnabled = false;
     [HideInInspector]
     public Rigidbody2D rb2D;
+    public bool canChangePawn = true;
     
     public State state;
     
@@ -78,20 +85,25 @@ public class MeepController : MonoBehaviour
                 autoLook.isOn = true;
                 break;
 
+            case State.Rage:
+               
+                break;
+
             case State.Controlled:
                 //inputEnabled = true;
                 autoLook.isOn = false;
                 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
                 if (((movement.x < 0 && !sprite.flipX) || (movement.x > 0 && sprite.flipX)))
                     sprite.flipX = !sprite.flipX;
-                if (inputEnabled && Input.GetButtonDown("ChangePawn"))
+                if (inputEnabled && Input.GetButtonDown("ChangePawn") && canChangePawn)
                 {
                     mainScript.ChangePawn(1);
                     state = State.Auto;
                     EnableFollowing();
                 }
-                if (inputEnabled && Input.GetButtonDown("Fire1"))
+                if (inputEnabled && Input.GetButtonDown("Fire1") && canPlatform)
                 {
+                    AudioManager.instance.PlaySound(sounds[0], transform.position, 0.5f);
                     inputEnabled = false;
                     StartCoroutine(WaitForIn());
                     state = State.Platform;
@@ -121,6 +133,7 @@ public class MeepController : MonoBehaviour
             case State.Platform:
                 if ((inputEnabled && (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical"))) || reset)
                 {
+                    AudioManager.instance.PlaySound(sounds[1], transform.position, 0.3f);
                     animator.SetBool("isPlatform", false);
                     inputEnabled = false;
                     
@@ -133,6 +146,7 @@ public class MeepController : MonoBehaviour
                 }
                 if (Vector3.Distance(transform.position, mainScript.playerPawn.transform.position) > distanceToReset && !playingCoroutine)
                 {
+                    AudioManager.instance.PlaySound(sounds[1], transform.position, 0.5f);
                     reset = true;
                     inputEnabled = false;
                     bCollider.enabled = false;
@@ -152,6 +166,18 @@ public class MeepController : MonoBehaviour
         
     }
 
+    public void EnableRage()
+    {
+        Debug.Log("Rage");
+        state = State.Rage;
+        animator.enabled = false;
+        autoLook.isOn = true;
+        autoLook.target = FindObjectOfType<Zorg>().gameObject;
+        sprite.sprite = rageSprite;
+        lights[0].color = Color.red;
+        lights[1].color = Color.red;
+
+    }
     public void DisableFollowing()
     {
         GetComponent<Pathfinding.AIDestinationSetter>().enabled = false;

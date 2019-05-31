@@ -7,6 +7,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Main : MonoBehaviour
 {
@@ -68,7 +69,10 @@ public class Main : MonoBehaviour
 
     public void ResetToCheckpoint()
     {
-        loadingScreen.sceneIndex = lastOpenedScene;
+        if (lastOpenedScene > 1)
+            loadingScreen.sceneIndex = lastOpenedScene;
+        else
+            loadingScreen.sceneIndex = SceneManager.GetActiveScene().buildIndex;
         loadingScreen.gameObject.SetActive(true);
         loadingScreen.Initialize();
         playerPawn.health = currentCheckpoint.playerHealth;
@@ -77,7 +81,7 @@ public class Main : MonoBehaviour
         RenderSettings.ambientLight = currentCheckpoint.ambientColor;
     }
 
-    IEnumerator EnableStellar()
+    public IEnumerator EnableStellar()
     {
         currentPawn = CurrentPawn.Stellar;
         playerPawn.rb2D.simulated = false;

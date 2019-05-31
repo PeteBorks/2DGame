@@ -35,17 +35,17 @@ public class VignetteFeedback : MonoBehaviour
         }
         if (player.health <=25)
         {
-            float t = Mathf.PingPong(Time.time, duration/2) / duration/2;
-            vignette.intensity.value = Mathf.Lerp(0.5f, 0.8f, t);
-            vignette.color.value = new Color(1.5f, 0, 0);
+            float t = Mathf.PingPong(Time.time, duration/3) / duration/3;
+            vignette.intensity.value = Mathf.Lerp(0.65f, 0.8f, t);
+            vignette.color.value = new Color(1.3f, 0, 0);
             if(!source)
                 source = AudioManager.instance.PlaySound2D(heartbeat, transform.position, 0.4f);
         }
         else if (player.health <= 50)
         {
             float t = Mathf.PingPong(Time.time, duration) / duration;
-            vignette.intensity.value = Mathf.Lerp(0.4f, 0.6f, t);
-            vignette.color.value = new Color(1, 0, 0);
+            vignette.intensity.value = Mathf.Lerp(0.3f, 0.6f, t);
+            vignette.color.value = new Color(1f, 0, 0);
         }
         else if(player.health>50)
         {
@@ -66,14 +66,14 @@ public class VignetteFeedback : MonoBehaviour
 
     public void Hit()
     {
-        if (playing)
+        if (playing || player.health <= 25)
             StopCoroutine(FadeVignette());
         vignette.intensity.value = 0.7f;
         vignette.color.value = Color.red;
         colorGrading.colorFilter.value = new Color(1f, 0.6f, 0.6f);
         StartCoroutine(FadeVignette());
     }
-    IEnumerator FadeVignette()
+    public IEnumerator FadeVignette()
     {
         playing = true;
         float current = vignette.intensity.value;

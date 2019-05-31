@@ -15,8 +15,9 @@ public class ButtonAction : MonoBehaviour
     float timeClock;
     [SerializeField]
     ButtonActionTargetInfo[] buttonActionTargets;
+    [SerializeField]
+    AudioClip sound;
     public float transitionDuration = 1;
-    
     public AnimationCurve transitionCurve;
     public Sprite activated;
     public Sprite targetSprite;
@@ -41,6 +42,7 @@ public class ButtonAction : MonoBehaviour
 
     IEnumerator OnStellarInteract()
     {
+        AudioManager.instance.PlaySound(sound, transform.position, 0.5f);
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         sprite.color = Color.green;
         foreach (Light light in l)
@@ -66,7 +68,8 @@ public class ButtonAction : MonoBehaviour
     }
     public IEnumerator OnInteract()
     {
-        if(activated)
+        AudioManager.instance.PlaySound(sound, transform.position, 0.5f);
+        if (activated)
             sprite.sprite = activated;
         foreach(Light light in l)
             light.color = Color.green;

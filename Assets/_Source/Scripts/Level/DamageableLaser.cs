@@ -28,7 +28,7 @@ public class DamageableLaser : MonoBehaviour
 	{
 		if(collision.GetComponent<PlayerController>())
 			collision.GetComponent<PlayerController>().TakeDamage(damage);
-        if (collision.GetComponent<MeepController>() && collision.GetComponent<MeepController>().state == MeepController.State.Controlled)
+        if (collision.GetComponent<MeepController>() && collision.GetComponent<MeepController>().state == MeepController.State.Controlled && damage > 0)
         {
             collision.GetComponent<MeepController>().mainScript.ChangePawn(1);
             collision.GetComponent<MeepController>().state = MeepController.State.Auto;
@@ -42,7 +42,10 @@ public class DamageableLaser : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(laserStartInterval);
-            gameObject.SetActive(false);
+            if (gameObject)
+                gameObject.SetActive(false);
+            else
+                yield return null;
             yield return new WaitForSeconds(laserInterval);
             gameObject.SetActive(true);
             GetComponent<Animator>().enabled = false;

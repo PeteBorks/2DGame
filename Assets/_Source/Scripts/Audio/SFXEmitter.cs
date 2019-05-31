@@ -15,6 +15,6 @@ public class SFXEmitter : MonoBehaviour
 
     public void PlayCrack()
     {
-            AudioManager.instance.PlaySound("crack", transform.position, 0.3f, 1);
+            AudioManager.instance.PlaySound("crack", transform.position, 0.4f, 1);
     }
 }
